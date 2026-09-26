@@ -1,0 +1,21 @@
+{
+  "general": {
+    "cart": "Panier",
+    "search": "Rechercher",
+    "account": "Compte",
+    "menu": "Menu",
+    "close": "Fermer"
+  },
+  "products": {
+    "add_to_cart": "Ajouter au panier",
+    "sold_out": "Épuisé"
+  },
+  "cart": {
+    "title": "Votre panier",
+    "empty": "Votre panier est vide.",
+    "subtotal": "Sous-total",
+    "checkout": "Passer la commande",
+    "remove": "Retirer",
+    "continue": "Continuer mes achats"
+  }
+}

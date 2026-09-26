@@ -1,0 +1,43 @@
+{%- liquid
+  assign bg = 'var(--c-bg)'
+  assign wave = 'var(--c-cream)'
+  if section.settings.background == 'cream'
+    assign bg = 'var(--c-cream)'
+    assign wave = 'var(--c-bg)'
+  endif
+-%}
+<section class="ba-section section-pad{% if section.settings.wave_bottom %} has-wave-bottom{% endif %}" style="--sec-bg: {{ bg }}; --wave-fill: {{ wave }};">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}<h2 class="h2 center">{{ section.settings.heading }}</h2>{%- endif -%}
+    <div class="ba{% if section.settings.round %} ba--round{% endif %}" data-before-after style="--pos: 50%;">
+      <div class="ba__img ba__img--after">{% render 'media', image: section.settings.image_after, placeholder: 'image', sizes: '600px' %}</div>
+      <div class="ba__img ba__img--before">{% render 'media', image: section.settings.image_before, placeholder: 'image', sizes: '600px' %}</div>
+      <span class="ba__label ba__label--left">{{ section.settings.label_before }}</span>
+      <span class="ba__label ba__label--right">{{ section.settings.label_after }}</span>
+      <div class="ba__handle" aria-hidden="true"><span>&lsaquo; &rsaquo;</span></div>
+      <input class="ba__range" type="range" min="0" max="100" value="50" aria-label="Comparer avant / après">
+    </div>
+  </div>
+  {%- if section.settings.wave_bottom -%}{% render 'wave', position: 'bottom' %}{%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Avant / Après",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre (optionnel)" },
+    { "type": "image_picker", "id": "image_before", "label": "Image de gauche (avec produit)" },
+    { "type": "image_picker", "id": "image_after", "label": "Image de droite (sans produit)" },
+    { "type": "text", "id": "label_before", "label": "Étiquette gauche", "default": "Avec notre produit" },
+    { "type": "text", "id": "label_after", "label": "Étiquette droite", "default": "Sans notre produit" },
+    { "type": "checkbox", "id": "round", "label": "Forme ronde", "default": true },
+    {
+      "type": "select", "id": "background", "label": "Fond",
+      "options": [{ "value": "page", "label": "Blanc cassé" }, { "value": "cream", "label": "Crème" }],
+      "default": "cream"
+    },
+    { "type": "checkbox", "id": "wave_bottom", "label": "Vague en bas", "default": true }
+  ],
+  "presets": [{ "name": "Avant / Après" }]
+}
+{% endschema %}

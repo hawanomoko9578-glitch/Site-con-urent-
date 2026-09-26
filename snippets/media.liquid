@@ -1,0 +1,15 @@
+{%- comment -%}
+  Affiche une image, ou un visuel d'exemple si aucune image n'est choisie.
+  Usage: {% render 'media', image: section.settings.image, placeholder: 'lifestyle-1', class: 'x', sizes: '50vw', eager: false %}
+{%- endcomment -%}
+{%- if image != blank -%}
+  {%- if eager -%}
+    {{ image | image_url: width: 2000 | image_tag: class: class, sizes: sizes, widths: '375, 550, 750, 1100, 1500, 2000', loading: 'eager', fetchpriority: 'high' }}
+  {%- else -%}
+    {{ image | image_url: width: 2000 | image_tag: class: class, sizes: sizes, widths: '375, 550, 750, 1100, 1500, 2000', loading: 'lazy' }}
+  {%- endif -%}
+{%- else -%}
+  {%- assign ph_name = placeholder | default: 'lifestyle-1' -%}
+  {%- assign ph_class = 'placeholder-svg ' | append: class -%}
+  {{ ph_name | placeholder_svg_tag: ph_class }}
+{%- endif -%}

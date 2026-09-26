@@ -1,0 +1,74 @@
+{%- liquid
+  assign bg = 'var(--c-bg)'
+  assign wave = 'var(--c-cream)'
+  if section.settings.background == 'cream'
+    assign bg = 'var(--c-cream)'
+    assign wave = 'var(--c-bg)'
+  endif
+-%}
+<section class="iwt section-pad{% if section.settings.wave_top %} has-wave-top{% endif %}{% if section.settings.wave_bottom %} has-wave-bottom{% endif %}" style="--sec-bg: {{ bg }}; --wave-fill: {{ wave }};">
+  {%- if section.settings.wave_top -%}{% render 'wave', position: 'top' %}{%- endif -%}
+  <div class="page-width iwt__grid{% if section.settings.image_right %} iwt__grid--reverse{% endif %}">
+    <div class="iwt__media">
+      {% render 'media', image: section.settings.image, placeholder: 'lifestyle-2', sizes: '(min-width: 990px) 50vw, 100vw', class: 'iwt__img' %}
+    </div>
+    <div class="iwt__content">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'eyebrow' -%}
+            <p class="eyebrow" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+          {%- when 'heading' -%}
+            <h2 class="h2" {{ block.shopify_attributes }}>{{ block.settings.text }}</h2>
+          {%- when 'text' -%}
+            <div class="rte iwt__text" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+          {%- when 'bullet' -%}
+            <p class="check-line" {{ block.shopify_attributes }}>{% render 'icon', name: 'check-circle' %}{{ block.settings.text }}</p>
+          {%- when 'button' -%}
+            <a class="btn btn--primary iwt__btn" href="{{ block.settings.link | default: routes.all_products_collection_url }}" {{ block.shopify_attributes }}>{{ block.settings.label }}</a>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+  {%- if section.settings.wave_bottom -%}{% render 'wave', position: 'bottom' %}{%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Image avec texte",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "checkbox", "id": "image_right", "label": "Image à droite", "default": false },
+    {
+      "type": "select", "id": "background", "label": "Fond",
+      "options": [{ "value": "page", "label": "Blanc cassé" }, { "value": "cream", "label": "Crème" }],
+      "default": "page"
+    },
+    { "type": "checkbox", "id": "wave_top", "label": "Vague en haut", "default": false },
+    { "type": "checkbox", "id": "wave_bottom", "label": "Vague en bas", "default": false }
+  ],
+  "blocks": [
+    { "type": "eyebrow", "name": "Sur-titre", "settings": [{ "type": "text", "id": "text", "label": "Texte", "default": "APPROUVÉ PAR +130 000 PROPRIÉTAIRES" }] },
+    { "type": "heading", "name": "Titre", "settings": [{ "type": "text", "id": "text", "label": "Texte", "default": "Pourquoi nous choisir ?" }] },
+    { "type": "text", "name": "Paragraphe", "settings": [{ "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Racontez ici pourquoi votre marque existe. Quel problème avez-vous vu sur le marché, et comment votre produit le résout mieux que les autres.</p>" }] },
+    { "type": "bullet", "name": "Point clé (coche)", "settings": [{ "type": "text", "id": "text", "label": "Texte", "default": "Acier inoxydable de qualité médicale" }] },
+    { "type": "button", "name": "Bouton", "limit": 1, "settings": [
+      { "type": "text", "id": "label", "label": "Texte", "default": "Découvrir" },
+      { "type": "url", "id": "link", "label": "Lien" }
+    ] }
+  ],
+  "presets": [
+    {
+      "name": "Image avec texte",
+      "blocks": [
+        { "type": "eyebrow" },
+        { "type": "heading" },
+        { "type": "text" },
+        { "type": "bullet", "settings": { "text": "Acier inoxydable de qualité médicale" } },
+        { "type": "bullet", "settings": { "text": "Moteur ultra-silencieux — moins de 20 dB" } },
+        { "type": "bullet", "settings": { "text": "Incroyablement facile à nettoyer" } },
+        { "type": "button" }
+      ]
+    }
+  ]
+}
+{% endschema %}

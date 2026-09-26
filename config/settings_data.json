@@ -1,0 +1,18 @@
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "color_primary": "#0A2475",
+      "color_primary_light": "#DCE6FF",
+      "color_accent": "#2F54D6",
+      "color_background": "#FAF9F7",
+      "color_cream": "#F4EFE8",
+      "color_text": "#1C1C1C",
+      "page_width": 1280,
+      "radius": 10,
+      "side_tab_enable": true,
+      "side_tab_text": "-15 € OFF",
+      "cart_redirect": true
+    }
+  }
+}

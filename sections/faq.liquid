@@ -1,0 +1,47 @@
+<section class="faq section-pad">
+  <div class="page-width faq__inner">
+    <div class="section-head center">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="h2">{{ section.settings.heading }}</h2>
+    </div>
+    <div class="accordion">
+      {%- for block in section.blocks -%}
+        <details class="accordion__item" {{ block.shopify_attributes }}>
+          <summary>{{ block.settings.question }}{% render 'icon', name: 'chevron-down' %}</summary>
+          <div class="rte accordion__content">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "QUESTIONS FRÉQUENTES" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "FAQ" }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "Votre question ?" },
+        { "type": "richtext", "id": "answer", "label": "Réponse", "default": "<p>Votre réponse ici.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        { "type": "question", "settings": { "question": "Mon chien va-t-il vraiment boire dedans ?" } },
+        { "type": "question", "settings": { "question": "À quelle fréquence changer le filtre ?" } },
+        { "type": "question", "settings": { "question": "Est-ce que c'est bruyant ?" } },
+        { "type": "question", "settings": { "question": "Est-ce difficile à nettoyer ?" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

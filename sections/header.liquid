@@ -1,0 +1,73 @@
+{%- liquid
+  assign transparent = false
+  if section.settings.transparent_home and template.name == 'index'
+    assign transparent = true
+  endif
+-%}
+<header class="site-header{% if transparent %} site-header--transparent{% endif %}" data-header>
+  <div class="site-header__inner page-width">
+    <button class="header-icon" type="button" data-drawer-open aria-label="{{ 'general.menu' | t }}">
+      {% render 'icon', name: 'menu' %}
+    </button>
+
+    <a class="site-header__logo" href="{{ routes.root_url }}">
+      {%- if section.settings.logo != blank -%}
+        {%- assign logo_style = 'width:' | append: section.settings.logo_width | append: 'px;height:auto' -%}
+        {{ section.settings.logo | image_url: width: 400 | image_tag: alt: shop.name, style: logo_style, loading: 'eager' }}
+      {%- else -%}
+        <span class="logo-text">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+
+    <div class="site-header__icons">
+      <a class="header-icon" href="{{ routes.search_url }}" aria-label="{{ 'general.search' | t }}">{% render 'icon', name: 'search' %}</a>
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="header-icon" href="{{ routes.account_url }}" aria-label="{{ 'general.account' | t }}">{% render 'icon', name: 'user' %}</a>
+      {%- endif -%}
+      <a class="header-icon header-icon--cart" href="{{ routes.cart_url }}" aria-label="{{ 'general.cart' | t }}">
+        {% render 'icon', name: 'cart' %}
+        <span class="cart-count" data-cart-count{% if cart.item_count == 0 %} hidden{% endif %}>{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="drawer" data-drawer hidden>
+  <div class="drawer__overlay" data-drawer-close></div>
+  <nav class="drawer__panel" aria-label="{{ 'general.menu' | t }}">
+    <button class="header-icon drawer__close" type="button" data-drawer-close aria-label="{{ 'general.close' | t }}">{% render 'icon', name: 'close' %}</button>
+    <ul class="drawer__list">
+      {%- for link in section.settings.menu.links -%}
+        <li>
+          <a href="{{ link.url }}">{{ link.title }}</a>
+          {%- if link.links.size > 0 -%}
+            <ul class="drawer__sub">
+              {%- for child in link.links -%}<li><a href="{{ child.url }}">{{ child.title }}</a></li>{%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </li>
+      {%- else -%}
+        <li><a href="{{ routes.root_url }}">Accueil</a></li>
+        <li><a href="{{ routes.all_products_collection_url }}">Boutique</a></li>
+      {%- endfor -%}
+    </ul>
+  </nav>
+</div>
+
+<style>
+  .site-header { --header-bg: {{ section.settings.bg }}; }
+</style>
+
+{% schema %}
+{
+  "name": "En-tête",
+  "class": "section-header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo (version blanche conseillée)" },
+    { "type": "range", "id": "logo_width", "label": "Largeur du logo", "min": 50, "max": 250, "step": 5, "unit": "px", "default": 90 },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "color", "id": "bg", "label": "Fond", "default": "#0A2475" },
+    { "type": "checkbox", "id": "transparent_home", "label": "Transparent au-dessus de la bannière (page d'accueil)", "default": true }
+  ]
+}
+{% endschema %}

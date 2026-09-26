@@ -1,0 +1,70 @@
+{%- style -%}
+  #shopify-section-{{ section.id }} .marquee { --mq-speed: {{ section.settings.speed }}s; }
+{%- endstyle -%}
+<div class="marquee marquee--{{ section.settings.style }}">
+  <div class="marquee__track">
+    {%- for i in (1..4) -%}
+      <div class="marquee__group"{% if i > 1 %} aria-hidden="true"{% endif %}>
+        {%- for block in section.blocks -%}
+          <span class="marquee__item" {% if i == 1 %}{{ block.shopify_attributes }}{% endif %}>
+            {%- if block.settings.icon != 'none' -%}{% render 'icon', name: block.settings.icon %}{%- endif -%}
+            {{ block.settings.text }}
+          </span>
+          {%- if section.settings.separator -%}<span class="marquee__sep">|</span>{%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Bandeau défilant",
+  "settings": [
+    {
+      "type": "select", "id": "style", "label": "Style",
+      "options": [
+        { "value": "dark", "label": "Bleu marine / texte blanc" },
+        { "value": "light", "label": "Bleu clair / texte bleu" }
+      ],
+      "default": "dark"
+    },
+    { "type": "checkbox", "id": "separator", "label": "Séparateurs « | »", "default": true },
+    { "type": "range", "id": "speed", "label": "Durée d'un tour (plus grand = plus lent)", "min": 10, "max": 80, "step": 5, "unit": "s", "default": 35 }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Élément",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Texte", "default": "Livraison offerte" },
+        {
+          "type": "select", "id": "icon", "label": "Icône",
+          "options": [
+            { "value": "none", "label": "Aucune" },
+            { "value": "plane", "label": "Avion" },
+            { "value": "award", "label": "Médaille" },
+            { "value": "sparkle", "label": "Étincelles" },
+            { "value": "user", "label": "Personne" },
+            { "value": "shield", "label": "Bouclier" },
+            { "value": "truck", "label": "Camion" },
+            { "value": "heart", "label": "Cœur" }
+          ],
+          "default": "none"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bandeau défilant",
+      "blocks": [
+        { "type": "item", "settings": { "text": "Acier inoxydable de qualité médicale" } },
+        { "type": "item", "settings": { "text": "Satisfait ou remboursé 365 jours" } },
+        { "type": "item", "settings": { "text": "Livraison offerte dans le monde entier" } },
+        { "type": "item", "settings": { "text": "+5 000 avis vérifiés" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

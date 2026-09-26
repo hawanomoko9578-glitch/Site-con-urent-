@@ -1,0 +1,518 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {},
+      "blocks": {
+        "b0": {
+          "type": "rating",
+          "settings": {}
+        },
+        "b1": {
+          "type": "title",
+          "settings": {}
+        },
+        "b2": {
+          "type": "description",
+          "settings": {}
+        },
+        "b3": {
+          "type": "tags",
+          "settings": {}
+        },
+        "b4": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "b5": {
+          "type": "buy_buttons",
+          "settings": {}
+        },
+        "b6": {
+          "type": "shipping_info",
+          "settings": {}
+        },
+        "b7": {
+          "type": "trust_icons",
+          "settings": {}
+        },
+        "b8": {
+          "type": "gifts",
+          "settings": {}
+        },
+        "b9": {
+          "type": "collapsible",
+          "settings": {
+            "title": "Caractéristiques"
+          }
+        },
+        "b10": {
+          "type": "collapsible",
+          "settings": {
+            "title": "Quelle taille choisir ?"
+          }
+        },
+        "b11": {
+          "type": "collapsible",
+          "settings": {
+            "title": "Détails du produit"
+          }
+        },
+        "b12": {
+          "type": "collapsible",
+          "settings": {
+            "title": "Livraison et retours"
+          }
+        },
+        "b13": {
+          "type": "collapsible",
+          "settings": {
+            "title": "Comment fonctionne le filtre ?"
+          }
+        },
+        "b14": {
+          "type": "collapsible",
+          "settings": {
+            "title": "Que contient la boîte ?"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12",
+        "b13",
+        "b14"
+      ]
+    },
+    "marquee": {
+      "type": "marquee",
+      "settings": {
+        "style": "light",
+        "separator": false
+      },
+      "blocks": {
+        "b0": {
+          "type": "item",
+          "settings": {
+            "text": "Livraison offerte partout",
+            "icon": "plane"
+          }
+        },
+        "b1": {
+          "type": "item",
+          "settings": {
+            "text": "Garantie 365 jours",
+            "icon": "award"
+          }
+        },
+        "b2": {
+          "type": "item",
+          "settings": {
+            "text": "Nettoyage sans effort",
+            "icon": "sparkle"
+          }
+        },
+        "b3": {
+          "type": "item",
+          "settings": {
+            "text": "Recommandé par les vétos",
+            "icon": "user"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3"
+      ]
+    },
+    "stats": {
+      "type": "stats",
+      "settings": {},
+      "blocks": {
+        "b0": {
+          "type": "stat",
+          "settings": {
+            "number": "97%",
+            "label": "ont remarqué que leur chien boit plus d'eau"
+          }
+        },
+        "b1": {
+          "type": "stat",
+          "settings": {
+            "number": "99%",
+            "label": "ont constaté plus d'énergie et de bonne humeur"
+          }
+        },
+        "b2": {
+          "type": "stat",
+          "settings": {
+            "number": "95%",
+            "label": "des chiens l'ont adoptée en 24 heures"
+          }
+        },
+        "b3": {
+          "type": "stat",
+          "settings": {
+            "number": "95%",
+            "label": "nous recommanderaient à leurs proches"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3"
+      ]
+    },
+    "benefits": {
+      "type": "benefits-accordion",
+      "settings": {},
+      "blocks": {
+        "b0": {
+          "type": "benefit",
+          "settings": {
+            "title": "Soutient les reins avec l'âge"
+          }
+        },
+        "b1": {
+          "type": "benefit",
+          "settings": {
+            "title": "Favorise un système urinaire sain"
+          }
+        },
+        "b2": {
+          "type": "benefit",
+          "settings": {
+            "title": "Booste l'énergie et l'humeur"
+          }
+        },
+        "b3": {
+          "type": "benefit",
+          "settings": {
+            "title": "Aide à se rafraîchir et récupérer"
+          }
+        },
+        "b4": {
+          "type": "benefit",
+          "settings": {
+            "title": "La base d'un corps en bonne santé"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3",
+        "b4"
+      ]
+    },
+    "reviews": {
+      "type": "reviews",
+      "settings": {},
+      "blocks": {
+        "b0": {
+          "type": "photo",
+          "settings": {}
+        },
+        "b1": {
+          "type": "photo",
+          "settings": {}
+        },
+        "b2": {
+          "type": "photo",
+          "settings": {}
+        },
+        "b3": {
+          "type": "photo",
+          "settings": {}
+        },
+        "b4": {
+          "type": "photo",
+          "settings": {}
+        },
+        "b5": {
+          "type": "photo",
+          "settings": {}
+        },
+        "b6": {
+          "type": "review",
+          "settings": {
+            "name": "Laura C.",
+            "title": "Deuxième commande…",
+            "text": "C'est ma deuxième commande. La première tourne depuis 7 mois sans aucun souci, alors j'en ai pris une pour ma sœur. Elle m'a écrit trois jours plus tard : son chien l'adore. Ça marche, tout simplement."
+          }
+        },
+        "b7": {
+          "type": "review",
+          "settings": {
+            "name": "Rachel G.",
+            "title": "Vraiment incroyable",
+            "text": "Je n'en attendais pas grand-chose. J'avais essayé 2 autres fontaines qui ne marchaient pas ou ont cassé. Trois semaines après, il y boit sans arrêt. Pompe silencieuse, facile à nettoyer."
+          }
+        },
+        "b8": {
+          "type": "review",
+          "settings": {
+            "name": "Karine M.",
+            "title": "LE BON CHOIX",
+            "text": "Je viens de l'acheter et je ne pourrais pas être plus satisfaite. Très bien construite et, contrairement à d'autres, étonnamment facile à monter. Aucune bactérie jusqu'ici."
+          }
+        },
+        "b9": {
+          "type": "review",
+          "settings": {
+            "name": "Éric C.",
+            "title": "J'ai hésité…",
+            "text": "J'ai hésité à cause du prix, mais aucun regret ! Luna, notre golden, l'adore. Plus besoin de remplir tous les jours et l'eau est toujours fraîche. Ça vaut l'investissement."
+          }
+        },
+        "b10": {
+          "type": "review",
+          "settings": {
+            "name": "Samuel A.",
+            "title": "La meilleure",
+            "text": "Nous avions une fontaine en plastique très difficile à nettoyer. Nous sommes passés à celle-ci : super simple à entretenir, l'eau reste fraîche et nos chiens l'adorent !"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10"
+      ]
+    },
+    "standards": {
+      "type": "standards",
+      "settings": {},
+      "blocks": {
+        "b0": {
+          "type": "item",
+          "settings": {
+            "icon": "heart",
+            "text": "Conçu avec des vétérinaires"
+          }
+        },
+        "b1": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "text": "Structure en acier inoxydable"
+          }
+        },
+        "b2": {
+          "type": "item",
+          "settings": {
+            "icon": "sparkle",
+            "text": "Facile à nettoyer (5 minutes)"
+          }
+        },
+        "b3": {
+          "type": "item",
+          "settings": {
+            "icon": "drop",
+            "text": "Jet robinet avec filtration"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3"
+      ]
+    },
+    "videos": {
+      "type": "video-testimonials",
+      "settings": {},
+      "blocks": {
+        "b0": {
+          "type": "video",
+          "settings": {
+            "label": "ESTHÉTIQUE"
+          }
+        },
+        "b1": {
+          "type": "video",
+          "settings": {
+            "label": "FRAÎCHEUR"
+          }
+        },
+        "b2": {
+          "type": "video",
+          "settings": {
+            "label": "ADIEU LES TOILETTES"
+          }
+        },
+        "b3": {
+          "type": "video",
+          "settings": {
+            "label": "PRÉFÉRENCE"
+          }
+        },
+        "b4": {
+          "type": "video",
+          "settings": {
+            "label": "SANS DÉGÂTS"
+          }
+        },
+        "b5": {
+          "type": "video",
+          "settings": {
+            "label": "ADOPTÉE"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5"
+      ]
+    },
+    "compare": {
+      "type": "comparison-table",
+      "settings": {},
+      "blocks": {
+        "b0": {
+          "type": "row",
+          "settings": {
+            "label": "MATÉRIAU",
+            "us": "INOX QUALITÉ MÉDICALE",
+            "col2": "?",
+            "col3": "?"
+          }
+        },
+        "b1": {
+          "type": "row",
+          "settings": {
+            "label": "FILTRATION",
+            "us": "TRIPLE COUCHE",
+            "col2": "SIMPLE OU AUCUNE",
+            "col3": "non"
+          }
+        },
+        "b2": {
+          "type": "row",
+          "settings": {
+            "label": "BRUIT",
+            "us": "ULTRA SILENCIEUX",
+            "col2": "POMPE BRUYANTE",
+            "col3": "non"
+          }
+        },
+        "b3": {
+          "type": "row",
+          "settings": {
+            "label": "FACILE À NETTOYER",
+            "us": "oui",
+            "col2": "non",
+            "col3": "non"
+          }
+        },
+        "b4": {
+          "type": "row",
+          "settings": {
+            "label": "JET ROBINET",
+            "us": "oui",
+            "col2": "non",
+            "col3": "non"
+          }
+        },
+        "b5": {
+          "type": "row",
+          "settings": {
+            "label": "CONÇU POUR DURER",
+            "us": "oui",
+            "col2": "non",
+            "col3": "?"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5"
+      ]
+    },
+    "timeline": {
+      "type": "timeline",
+      "settings": {},
+      "blocks": {
+        "b0": {
+          "type": "step",
+          "settings": {
+            "title": "Semaine 1 : premières gorgées",
+            "items": "La fontaine les attire*\nIls l'adoptent*\nIls commencent à y boire librement*"
+          }
+        },
+        "b1": {
+          "type": "step",
+          "settings": {
+            "title": "Semaine 2 : le plein d'eau",
+            "items": "Ils boivent plus chaque jour*\nLes réserves d'eau se reconstituent*\nL'énergie augmente doucement*"
+          }
+        },
+        "b2": {
+          "type": "step",
+          "settings": {
+            "title": "Semaine 3 : bien hydratés",
+            "items": "Bien hydratés au quotidien*\nSe rafraîchir devient plus facile*\nHumeur et énergie en hausse*"
+          }
+        },
+        "b3": {
+          "type": "step",
+          "settings": {
+            "title": "Semaine 4+ : équilibre durable",
+            "dark": true,
+            "items": "Énergie stable grâce à une bonne hydratation*\nMeilleure digestion, circulation et métabolisme*\nFait partie de leur routine*\nSoutient les reins et le système urinaire sur le long terme*"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3"
+      ]
+    }
+  },
+  "order": [
+    "main",
+    "marquee",
+    "stats",
+    "benefits",
+    "reviews",
+    "standards",
+    "videos",
+    "compare",
+    "timeline"
+  ]
+}

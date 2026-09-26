@@ -1,0 +1,11 @@
+{%- assign v = value | strip | downcase -%}
+{%- case v -%}
+  {%- when 'oui', 'yes', 'check', '✓' -%}
+    <span class="cmp-icon cmp-icon--yes">{% render 'icon', name: 'check-filled' %}</span>
+  {%- when 'non', 'no', 'x', '✕' -%}
+    <span class="cmp-icon cmp-icon--no">{% render 'icon', name: 'x-filled' %}</span>
+  {%- when '?' -%}
+    <span class="cmp-icon cmp-icon--q">{% render 'icon', name: 'question-filled' %}</span>
+  {%- else -%}
+    <span class="cmp-text">{{ value }}</span>
+{%- endcase -%}

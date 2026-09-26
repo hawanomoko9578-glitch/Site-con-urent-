@@ -1,0 +1,61 @@
+<footer class="site-footer">
+  <div class="site-footer__top">
+    <div class="footer-card footer-card--brand">
+      <div class="footer-marquee" aria-hidden="true">
+        <div class="footer-marquee__track">
+          {%- for i in (1..6) -%}
+            <span>{{ section.settings.marquee_text }}</span><span class="footer-marquee__dot">&bull;</span>
+          {%- endfor -%}
+        </div>
+      </div>
+      <p class="footer-card__tagline">{{ section.settings.tagline }}</p>
+    </div>
+
+    <div class="footer-card footer-card--newsletter">
+      <h3 class="footer-card__title">{{ section.settings.newsletter_title }}</h3>
+      <div class="footer-card__text">{{ section.settings.newsletter_text }}</div>
+      {%- form 'customer', class: 'newsletter-form', id: 'FooterNewsletter' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        {%- if form.posted_successfully? -%}
+          <p class="newsletter-form__msg">Merci pour votre inscription !</p>
+        {%- else -%}
+          <div class="newsletter-form__row">
+            <input type="email" name="contact[email]" placeholder="Email" required aria-label="Email" autocomplete="email">
+            <button type="submit">{{ section.settings.newsletter_button }}</button>
+          </div>
+          {%- if form.errors -%}<p class="newsletter-form__msg">{{ form.errors | default_errors }}</p>{%- endif -%}
+        {%- endif -%}
+      {%- endform -%}
+      <div class="footer-social">
+        {%- if section.settings.instagram != blank -%}<a href="{{ section.settings.instagram }}" aria-label="Instagram" target="_blank" rel="noopener">{% render 'icon', name: 'instagram' %}</a>{%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <div class="site-footer__bottom">
+    <span>&copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: routes.root_url }}</span>
+    <ul class="footer-links">
+      {%- for link in section.settings.menu.links -%}
+        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+      {%- else -%}
+        {%- for policy in shop.policies -%}<li><a href="{{ policy.url }}">{{ policy.title }}</a></li>{%- endfor -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Pied de page",
+  "class": "section-footer",
+  "settings": [
+    { "type": "text", "id": "marquee_text", "label": "Texte défilant", "default": "ma marque" },
+    { "type": "text", "id": "tagline", "label": "Slogan", "default": "FILTRÉE. FRAÎCHE. HYDRATATION." },
+    { "type": "text", "id": "newsletter_title", "label": "Titre newsletter", "default": "Jusqu'à -15 % sur votre première commande" },
+    { "type": "richtext", "id": "newsletter_text", "label": "Texte newsletter", "default": "<p>Inscrivez-vous à la newsletter et recevez jusqu'à -15 % sur votre première commande, des promos exclusives et plus encore !</p>" },
+    { "type": "text", "id": "newsletter_button", "label": "Bouton", "default": "S'inscrire" },
+    { "type": "url", "id": "instagram", "label": "Lien Instagram", "default": "https://instagram.com" },
+    { "type": "link_list", "id": "menu", "label": "Menu du bas", "info": "Si vide, les pages légales s'affichent automatiquement." }
+  ]
+}
+{% endschema %}

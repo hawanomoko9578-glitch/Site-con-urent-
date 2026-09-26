@@ -1,0 +1,307 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {},
+      "blocks": {
+        "b0": {
+          "type": "check",
+          "settings": {
+            "text": "Approuvé par les vétos"
+          }
+        },
+        "b1": {
+          "type": "check",
+          "settings": {
+            "text": "Livraison offerte"
+          }
+        },
+        "b2": {
+          "type": "check",
+          "settings": {
+            "text": "Garantie 365 jours"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2"
+      ]
+    },
+    "marquee": {
+      "type": "marquee",
+      "settings": {
+        "style": "dark"
+      },
+      "blocks": {
+        "b0": {
+          "type": "item",
+          "settings": {
+            "text": "Acier inoxydable de qualité médicale"
+          }
+        },
+        "b1": {
+          "type": "item",
+          "settings": {
+            "text": "Satisfait ou remboursé 365 jours"
+          }
+        },
+        "b2": {
+          "type": "item",
+          "settings": {
+            "text": "Livraison offerte dans le monde entier"
+          }
+        },
+        "b3": {
+          "type": "item",
+          "settings": {
+            "text": "+5 000 avis vérifiés"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3"
+      ]
+    },
+    "why": {
+      "type": "image-with-text",
+      "settings": {
+        "background": "page"
+      },
+      "blocks": {
+        "b0": {
+          "type": "eyebrow",
+          "settings": {
+            "text": "APPROUVÉ PAR +130 000 PROPRIÉTAIRES DANS LE MONDE"
+          }
+        },
+        "b1": {
+          "type": "heading",
+          "settings": {
+            "text": "Pourquoi nous choisir ?"
+          }
+        },
+        "b2": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Notre marque existe parce que nous avons regardé ce qui existait déjà sur le marché et que nous refusions de le mettre devant nos propres chiens. Du plastique qui moisit. Des fontaines quasi impossibles à nettoyer. Des pompes aussi bruyantes qu'un mixeur à 6 h du matin.</p><p>Chaque pièce a dû mériter sa place. De l'acier de qualité médicale, parce que le plastique n'a rien à faire près de l'eau de votre chien. Lavable au lave-vaisselle. Un filtre qui filtre vraiment. Une pompe qu'on oublie.</p>"
+          }
+        },
+        "b3": {
+          "type": "bullet",
+          "settings": {
+            "text": "Acier inoxydable de qualité médicale"
+          }
+        },
+        "b4": {
+          "type": "bullet",
+          "settings": {
+            "text": "Moteur ultra-silencieux — moins de 20 dB"
+          }
+        },
+        "b5": {
+          "type": "bullet",
+          "settings": {
+            "text": "Incroyablement facile à nettoyer"
+          }
+        },
+        "b6": {
+          "type": "button",
+          "settings": {
+            "label": "Découvrir"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6"
+      ]
+    },
+    "problem": {
+      "type": "image-with-text",
+      "settings": {
+        "background": "cream",
+        "wave_top": true
+      },
+      "blocks": {
+        "b0": {
+          "type": "eyebrow",
+          "settings": {
+            "text": "APPROUVÉ PAR +130 000 PROPRIÉTAIRES DANS LE MONDE"
+          }
+        },
+        "b1": {
+          "type": "heading",
+          "settings": {
+            "text": "Le problème des gamelles classiques"
+          }
+        },
+        "b2": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Les chiens ont évolué en buvant l'eau des rivières et des ruisseaux — une eau qui coule. L'eau stagnante va à l'encontre de leur instinct, c'est pourquoi la plupart des chiens ne boivent jamais assez dans une gamelle. Vous l'avez sûrement vu : dès que le tuyau d'arrosage s'allume, votre chien accourt.</p><p>Et même une gamelle propre développe des bactéries en quelques heures. L'eau stagnante leur offre un endroit où vivre.</p>"
+          }
+        },
+        "b3": {
+          "type": "bullet",
+          "settings": {
+            "text": "Sans fil, avec trois modes d'hydratation intelligents"
+          }
+        },
+        "b4": {
+          "type": "bullet",
+          "settings": {
+            "text": "Moteur ultra-silencieux — moins de 20 dB"
+          }
+        },
+        "b5": {
+          "type": "bullet",
+          "settings": {
+            "text": "Acier inoxydable 304 premium, lavable au lave-vaisselle"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5"
+      ]
+    },
+    "before_after": {
+      "type": "before-after",
+      "settings": {
+        "background": "cream",
+        "wave_bottom": true
+      }
+    },
+    "features": {
+      "type": "features-around-image",
+      "settings": {},
+      "blocks": {
+        "b0": {
+          "type": "feature",
+          "settings": {
+            "title": "Acier inoxydable",
+            "text": "Acier inoxydable 304 de qualité médicale. Aucun plastique en contact avec l'eau. Jamais."
+          }
+        },
+        "b1": {
+          "type": "feature",
+          "settings": {
+            "title": "Filtration profonde",
+            "text": "Filtre charbon actif 3 couches : élimine chlore, sédiments, poils et odeurs. Dure jusqu'à 3 semaines."
+          }
+        },
+        "b2": {
+          "type": "feature",
+          "settings": {
+            "title": "Ultra silencieux",
+            "text": "3 modes de débit, chacun conçu pour être plus silencieux qu'un téléphone en vibreur."
+          }
+        },
+        "b3": {
+          "type": "feature",
+          "settings": {
+            "title": "Nettoyage facile",
+            "text": "Seulement 3 pièces pour un nettoyage ultra simple (lave-vaisselle !)."
+          }
+        },
+        "b4": {
+          "type": "feature",
+          "settings": {
+            "title": "Grande capacité",
+            "text": "4 L / 7 L : à remplir tous les 6 à 10 jours. Pour toutes les races et tailles."
+          }
+        },
+        "b5": {
+          "type": "feature",
+          "settings": {
+            "title": "Mode sans fil",
+            "text": "Fonctionne avec ou sans fil ! Aucun câble à mâchouiller. Batterie qui tient des semaines."
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5"
+      ]
+    },
+    "story": {
+      "type": "rich-text",
+      "settings": {}
+    },
+    "faq": {
+      "type": "faq",
+      "settings": {},
+      "blocks": {
+        "b0": {
+          "type": "question",
+          "settings": {
+            "question": "Mon chien va-t-il vraiment boire dedans ?",
+            "answer": "<p>L'eau en mouvement attire naturellement les chiens. La plupart l'adoptent en moins de 24 heures.</p>"
+          }
+        },
+        "b1": {
+          "type": "question",
+          "settings": {
+            "question": "À quelle fréquence changer le filtre ?",
+            "answer": "<p>Nous conseillons de changer le filtre toutes les 2 à 3 semaines.</p>"
+          }
+        },
+        "b2": {
+          "type": "question",
+          "settings": {
+            "question": "Est-ce que c'est bruyant ?",
+            "answer": "<p>Non, la pompe fonctionne à moins de 20 dB, plus silencieuse qu'un téléphone en vibreur.</p>"
+          }
+        },
+        "b3": {
+          "type": "question",
+          "settings": {
+            "question": "Est-ce difficile à nettoyer ?",
+            "answer": "<p>Pas du tout : 3 pièces, 5 minutes, et tout passe au lave-vaisselle.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3"
+      ]
+    },
+    "products": {
+      "type": "product-carousel",
+      "settings": {
+        
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "marquee",
+    "why",
+    "problem",
+    "before_after",
+    "features",
+    "story",
+    "faq",
+    "products"
+  ]
+}

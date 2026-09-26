@@ -1,0 +1,27 @@
+<section class="section-pad page-width">
+  <h1 class="h2 center">{{ collection.title }}</h1>
+  {%- if collection.description != blank -%}<div class="rte center">{{ collection.description }}</div>{%- endif -%}
+  {%- paginate collection.products by 24 -%}
+    <div class="grid-products">
+      {%- for product in collection.products -%}
+        <a class="pcard" href="{{ product.url }}">
+          <span class="pcard__type">{{ product.type | default: product.vendor }}</span>
+          <span class="pcard__media">
+            {%- if product.featured_media -%}
+              {{ product.featured_media | image_url: width: 700 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 30vw, 50vw', widths: '350, 500, 700' }}
+            {%- else -%}{{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}{%- endif -%}
+          </span>
+          <span class="pcard__title">{{ product.title }}</span>
+          <span class="pcard__price">{{ product.price | money }}{% if product.compare_at_price > product.price %} <s>{{ product.compare_at_price | money }}</s>{% endif %}</span>
+        </a>
+      {%- else -%}
+        <p>Aucun produit dans cette collection.</p>
+      {%- endfor -%}
+    </div>
+    {%- if paginate.pages > 1 -%}<div class="pagination center">{{ paginate | default_pagination }}</div>{%- endif -%}
+  {%- endpaginate -%}
+</section>
+
+{% schema %}
+{ "name": "Collection", "settings": [] }
+{% endschema %}

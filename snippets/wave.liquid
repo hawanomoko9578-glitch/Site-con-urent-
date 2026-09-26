@@ -1,0 +1,8 @@
+{%- comment -%} Séparateur en forme de vague. position: 'top' | 'bottom' {%- endcomment -%}
+<svg class="wave wave--{{ position }}" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+  {%- if position == 'top' -%}
+    <path d="M0 0h1440v40c-120 30-260 40-420 20S700 0 520 20 200 70 0 40z"/>
+  {%- else -%}
+    <path d="M0 80h1440V40c-120-30-260-40-420-20S700 80 520 60 200 10 0 40z"/>
+  {%- endif -%}
+</svg>

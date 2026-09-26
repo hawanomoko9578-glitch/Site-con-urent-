@@ -1,0 +1,18 @@
+<section class="richtext-sec section-pad section-pad--tight">
+  <div class="page-width{% if section.settings.center %} center{% endif %}">
+    {%- if section.settings.heading != blank -%}<h2 class="h3">{{ section.settings.heading }}</h2>{%- endif -%}
+    <div class="rte richtext-sec__body">{{ section.settings.text }}</div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Texte (histoire)",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre", "default": "L'histoire de notre marque" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Je m'appelle Prénom, fondateur de la marque. Racontez ici le déclic : l'animal, le problème rencontré, la recommandation du vétérinaire…</p><p>Expliquez ce que vous avez cherché sur le marché et pourquoi rien ne vous convenait.</p><p>Puis comment vous avez créé votre propre produit, et le résultat obtenu.</p><p>C'est comme ça que tout a commencé.</p>" },
+    { "type": "checkbox", "id": "center", "label": "Centrer", "default": false }
+  ],
+  "presets": [{ "name": "Texte (histoire)" }]
+}
+{% endschema %}

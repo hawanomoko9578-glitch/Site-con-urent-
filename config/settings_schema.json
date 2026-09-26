@@ -1,0 +1,43 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Aqua Clone",
+    "theme_version": "1.0.0",
+    "theme_author": "Custom",
+    "theme_documentation_url": "https://shopify.dev/docs/themes",
+    "theme_support_url": "https://help.shopify.com"
+  },
+  {
+    "name": "Couleurs",
+    "settings": [
+      { "type": "color", "id": "color_primary", "label": "Couleur principale (bleu marine)", "default": "#0A2475" },
+      { "type": "color", "id": "color_primary_light", "label": "Bleu clair (boutons secondaires, badges)", "default": "#DCE6FF" },
+      { "type": "color", "id": "color_accent", "label": "Bleu vif (bandeau promo, timeline)", "default": "#2F54D6" },
+      { "type": "color", "id": "color_background", "label": "Fond de page", "default": "#FAF9F7" },
+      { "type": "color", "id": "color_cream", "label": "Fond crème (sections alternées)", "default": "#F4EFE8" },
+      { "type": "color", "id": "color_text", "label": "Texte", "default": "#1C1C1C" }
+    ]
+  },
+  {
+    "name": "Mise en page",
+    "settings": [
+      { "type": "range", "id": "page_width", "label": "Largeur max de page", "min": 1000, "max": 1600, "step": 20, "unit": "px", "default": 1280 },
+      { "type": "range", "id": "radius", "label": "Arrondi des coins", "min": 0, "max": 24, "step": 1, "unit": "px", "default": 10 },
+      { "type": "image_picker", "id": "favicon", "label": "Favicon" }
+    ]
+  },
+  {
+    "name": "Onglet latéral promo",
+    "settings": [
+      { "type": "checkbox", "id": "side_tab_enable", "label": "Afficher l'onglet latéral", "default": true },
+      { "type": "text", "id": "side_tab_text", "label": "Texte", "default": "-15 € OFF" },
+      { "type": "url", "id": "side_tab_link", "label": "Lien" }
+    ]
+  },
+  {
+    "name": "Panier",
+    "settings": [
+      { "type": "checkbox", "id": "cart_redirect", "label": "Aller au panier après ajout", "default": true }
+    ]
+  }
+]

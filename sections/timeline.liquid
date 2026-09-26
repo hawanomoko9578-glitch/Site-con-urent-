@@ -1,0 +1,67 @@
+<section class="timeline section-pad">
+  <div class="page-width timeline__grid">
+    <div class="timeline__left center">
+      <div class="timeline__media">
+        {% render 'media', image: section.settings.image, placeholder: 'lifestyle-1', sizes: '(min-width: 990px) 50vw, 100vw' %}
+        {%- if section.settings.overlay_logo != blank -%}
+          <div class="timeline__logo">{{ section.settings.overlay_logo | image_url: width: 400 | image_tag: loading: 'lazy' }}</div>
+        {%- endif -%}
+      </div>
+      <h2 class="h2 timeline__title"><span class="accent">{{ section.settings.heading_1 }}</span><br>{{ section.settings.heading_2 }}</h2>
+      <div class="rte">{{ section.settings.text }}</div>
+      {%- if section.settings.button_label != blank -%}
+        <a class="btn btn--primary btn--pill btn--wide" href="{{ section.settings.button_link | default: '#MainContent' }}">{{ section.settings.button_label }} {% render 'icon', name: 'arrow-right' %}</a>
+      {%- endif -%}
+      {%- if section.settings.guarantee != blank -%}<p class="timeline__guarantee">{% render 'icon', name: 'check-circle' %}{{ section.settings.guarantee }}</p>{%- endif -%}
+    </div>
+
+    <ol class="timeline__steps">
+      {%- for block in section.blocks -%}
+        {%- assign lines = block.settings.items | newline_to_br | split: '<br />' -%}
+        <li class="step{% if block.settings.dark %} step--dark{% endif %}" {{ block.shopify_attributes }}>
+          <p class="step__title">{{ block.settings.title }}</p>
+          <ul class="step__list">
+            {%- for l in lines -%}
+              {%- assign ll = l | strip -%}
+              {%- if ll != blank -%}<li>{% render 'icon', name: 'check' %}{{ ll }}</li>{%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Parcours (timeline)",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "image_picker", "id": "overlay_logo", "label": "Logo par-dessus l'image (optionnel)" },
+    { "type": "text", "id": "heading_1", "label": "Titre ligne 1 (en couleur)", "default": "Leur parcours d'hydratation" },
+    { "type": "text", "id": "heading_2", "label": "Titre ligne 2", "default": "avec notre fontaine" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Pensée pour l'hydratation au quotidien, voici comment les choses évoluent une fois qu'elle fait partie de leur routine.</p>" },
+    { "type": "text", "id": "button_label", "label": "Bouton", "default": "ESSAYER MAINTENANT" },
+    { "type": "url", "id": "button_link", "label": "Lien du bouton" },
+    { "type": "text", "id": "guarantee", "label": "Garantie", "default": "Satisfait ou remboursé 30 jours" }
+  ],
+  "blocks": [
+    { "type": "step", "name": "Étape", "settings": [
+      { "type": "text", "id": "title", "label": "Titre", "default": "Semaine 1 : premières gorgées" },
+      { "type": "textarea", "id": "items", "label": "Points (un par ligne)", "default": "Point 1*\nPoint 2*\nPoint 3*" },
+      { "type": "checkbox", "id": "dark", "label": "Style foncé (dernière étape)", "default": false }
+    ] }
+  ],
+  "presets": [
+    {
+      "name": "Parcours (timeline)",
+      "blocks": [
+        { "type": "step", "settings": { "title": "Semaine 1 : premières gorgées", "items": "La fontaine les attire*\nIls l'adoptent*\nIls commencent à y boire librement*" } },
+        { "type": "step", "settings": { "title": "Semaine 2 : le plein d'eau", "items": "Ils boivent plus chaque jour*\nLes réserves d'eau se reconstituent*\nL'énergie augmente doucement*" } },
+        { "type": "step", "settings": { "title": "Semaine 3 : bien hydratés", "items": "Bien hydratés au quotidien*\nSe rafraîchir devient plus facile*\nHumeur et énergie en hausse*" } },
+        { "type": "step", "settings": { "title": "Semaine 4+ : équilibre durable", "dark": true, "items": "Énergie stable grâce à une bonne hydratation*\nMeilleure digestion, circulation et métabolisme*\nFait partie de leur routine*\nSoutient les reins et le système urinaire sur le long terme*" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

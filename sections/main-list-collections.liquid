@@ -1,0 +1,17 @@
+<section class="section-pad page-width">
+  <h1 class="h2 center">Collections</h1>
+  <div class="grid-products">
+    {%- for collection in collections -%}
+      <a class="pcard" href="{{ collection.url }}">
+        <span class="pcard__media">
+          {%- if collection.featured_image -%}{{ collection.featured_image | image_url: width: 700 | image_tag: loading: 'lazy' }}{%- else -%}{{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}{%- endif -%}
+        </span>
+        <span class="pcard__title">{{ collection.title }}</span>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Liste des collections", "settings": [] }
+{% endschema %}

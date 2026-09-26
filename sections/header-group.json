@@ -1,0 +1,9 @@
+{
+  "type": "header",
+  "name": "Groupe en-tête",
+  "sections": {
+    "announcement": { "type": "announcement-bar", "settings": {} },
+    "header": { "type": "header", "settings": {} }
+  },
+  "order": ["announcement", "header"]
+}

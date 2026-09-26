@@ -1,0 +1,66 @@
+<section class="benefits section-pad" style="--sec-bg: var(--c-cream);">
+  <div class="page-width benefits__grid">
+    <div class="benefits__media">
+      {% render 'media', image: section.settings.image, placeholder: 'lifestyle-2', sizes: '(min-width: 990px) 50vw, 100vw' %}
+      {%- if section.settings.badge_text != blank -%}
+        <div class="spin-badge" aria-hidden="true">
+          <svg viewBox="0 0 120 120">
+            <defs><path id="badge-circle-{{ section.id }}" d="M60,60 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs>
+            <text><textPath href="#badge-circle-{{ section.id }}">{{ section.settings.badge_text }}</textPath></text>
+          </svg>
+          <span class="spin-badge__icon">{% render 'icon', name: 'drop' %}</span>
+        </div>
+      {%- endif -%}
+    </div>
+    <div class="benefits__content center">
+      <h2 class="h2">{{ section.settings.heading }}{% if section.settings.heading_accent != blank %} <em class="accent">{{ section.settings.heading_accent }}</em>{% endif %}</h2>
+      <div class="rte">{{ section.settings.text }}</div>
+      <div class="benefits__list">
+        {%- for block in section.blocks -%}
+          <details class="benefit" {{ block.shopify_attributes }}>
+            <summary>{% render 'icon', name: 'check-filled' %}<span>{{ block.settings.title }}</span>{% render 'icon', name: 'chevron-down' %}</summary>
+            <div class="rte benefit__content">{{ block.settings.text }}</div>
+          </details>
+        {%- endfor -%}
+      </div>
+      {%- if section.settings.button_label != blank -%}
+        <a class="btn btn--primary btn--pill btn--wide" href="{{ section.settings.button_link | default: '#MainContent' }}">{{ section.settings.button_label }} {% render 'icon', name: 'arrow-right' %}</a>
+      {%- endif -%}
+      {%- if section.settings.caption != blank -%}<p class="benefits__caption">{{ section.settings.caption }}</p>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bienfaits (accordéon)",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "badge_text", "label": "Texte du badge rond", "default": "LEUR NOUVEAU RITUEL D'HYDRATATION • " },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Tout leur corps fonctionne grâce à" },
+    { "type": "text", "id": "heading_accent", "label": "Mot en couleur", "default": "l'eau" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>L'hydratation est un pilier de la santé. Notre fontaine s'appuie sur leur instinct avec une eau fraîche et en mouvement, pour qu'ils boivent davantage.</p>" },
+    { "type": "text", "id": "button_label", "label": "Bouton", "default": "PROFITER DE -50 %" },
+    { "type": "url", "id": "button_link", "label": "Lien du bouton" },
+    { "type": "text", "id": "caption", "label": "Légende sous le bouton", "default": "Leur nouveau rituel d'hydratation | Garantie 365 jours" }
+  ],
+  "blocks": [
+    { "type": "benefit", "name": "Bienfait", "settings": [
+      { "type": "text", "id": "title", "label": "Titre", "default": "Soutient les reins avec l'âge" },
+      { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Expliquez ce bienfait en quelques lignes.</p>" }
+    ] }
+  ],
+  "presets": [
+    {
+      "name": "Bienfaits (accordéon)",
+      "blocks": [
+        { "type": "benefit", "settings": { "title": "Soutient les reins avec l'âge" } },
+        { "type": "benefit", "settings": { "title": "Favorise un système urinaire sain" } },
+        { "type": "benefit", "settings": { "title": "Booste l'énergie et l'humeur" } },
+        { "type": "benefit", "settings": { "title": "Aide à se rafraîchir et récupérer" } },
+        { "type": "benefit", "settings": { "title": "La base d'un corps en bonne santé" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

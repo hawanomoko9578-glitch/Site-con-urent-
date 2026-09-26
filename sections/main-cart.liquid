@@ -1,0 +1,36 @@
+<section class="section-pad page-width cart-page">
+  <h1 class="h2">{{ 'cart.title' | t }}</h1>
+  {%- if cart.item_count > 0 -%}
+    <form action="{{ routes.cart_url }}" method="post" class="cart-form">
+      <div class="cart-items">
+        {%- for item in cart.items -%}
+          <div class="cart-item">
+            <a class="cart-item__img" href="{{ item.url }}">
+              {%- if item.image -%}{{ item.image | image_url: width: 200 | image_tag: loading: 'lazy' }}{%- endif -%}
+            </a>
+            <div class="cart-item__info">
+              <a href="{{ item.url }}"><strong>{{ item.product.title }}</strong></a>
+              {%- unless item.product.has_only_default_variant -%}<small>{{ item.variant.title }}</small>{%- endunless -%}
+              <span>{{ item.final_price | money }}</span>
+            </div>
+            <input class="cart-item__qty" type="number" name="updates[]" value="{{ item.quantity }}" min="0" aria-label="Quantité">
+            <a class="cart-item__remove" href="{{ item.url_to_remove }}">{{ 'cart.remove' | t }}</a>
+          </div>
+        {%- endfor -%}
+      </div>
+      <div class="cart-summary">
+        <p class="cart-summary__total">{{ 'cart.subtotal' | t }} : <strong>{{ cart.total_price | money }}</strong></p>
+        <textarea name="note" placeholder="Note de commande (optionnel)">{{ cart.note }}</textarea>
+        <button type="submit" name="update" class="btn btn--outline">Mettre à jour</button>
+        <button type="submit" name="checkout" class="btn btn--primary btn--lg">{{ 'cart.checkout' | t }}</button>
+      </div>
+    </form>
+  {%- else -%}
+    <p>{{ 'cart.empty' | t }}</p>
+    <a class="btn btn--primary" href="{{ routes.all_products_collection_url }}">{{ 'cart.continue' | t }}</a>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{ "name": "Panier", "settings": [] }
+{% endschema %}

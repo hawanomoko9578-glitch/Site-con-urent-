@@ -1,0 +1,84 @@
+<section class="reviews section-pad dark">
+  <div class="page-width center">
+    <span class="reviews__stars">{% render 'stars' %}</span>
+    <p class="reviews__meta">{{ section.settings.meta }}</p>
+    <h2 class="h1 reviews__title">{{ section.settings.heading }}</h2>
+  </div>
+
+  {%- assign photo_blocks = section.blocks | where: 'type', 'photo' -%}
+  <div class="photo-marquee" style="--mq-speed: {{ section.settings.speed }}s;">
+    <div class="photo-marquee__track">
+      {%- for i in (1..2) -%}
+        {%- for block in photo_blocks -%}
+          <div class="photo-marquee__item" {% if i == 1 %}{{ block.shopify_attributes }}{% else %}aria-hidden="true"{% endif %}>
+            {% render 'media', image: block.settings.image, placeholder: 'lifestyle-1', sizes: '260px' %}
+          </div>
+        {%- else -%}
+          {%- for j in (1..6) -%}
+            {%- assign ph = j | modulo: 2 | plus: 1 -%}
+            <div class="photo-marquee__item"{% if i > 1 %} aria-hidden="true"{% endif %}>{{ 'lifestyle-' | append: ph | placeholder_svg_tag: 'placeholder-svg' }}</div>
+          {%- endfor -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <div class="page-width" data-slider>
+    <div class="slider-track reviews__track" data-slider-track>
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'review' -%}
+          <article class="review-card" {{ block.shopify_attributes }}>
+            <span class="review-card__stars">{% render 'stars', count: block.settings.rating %}</span>
+            <p class="review-card__name">{{ block.settings.name }}</p>
+            <span class="review-card__badge">{{ section.settings.verified_label }}</span>
+            <h3 class="review-card__title">{{ block.settings.title }}</h3>
+            <p class="review-card__text">{{ block.settings.text }}</p>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    <div class="slider-foot">
+      <div class="slider-progress"><span data-slider-progress></span></div>
+      <div class="slider-nav">
+        <button type="button" class="round-btn round-btn--dark" data-slider-prev aria-label="Précédent">{% render 'icon', name: 'chevron-left' %}</button>
+        <button type="button" class="round-btn round-btn--dark" data-slider-next aria-label="Suivant">{% render 'icon', name: 'chevron-right' %}</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Avis clients",
+  "settings": [
+    { "type": "text", "id": "meta", "label": "Note", "default": "4,9 étoiles | +5 000 avis" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Découvrez comment +47 000 propriétaires gardent leur chien hydraté, en bonne santé, et buvant vraiment plus d'eau" },
+    { "type": "text", "id": "verified_label", "label": "Badge", "default": "Avis vérifié" },
+    { "type": "range", "id": "speed", "label": "Vitesse du défilement photos", "min": 10, "max": 80, "step": 5, "unit": "s", "default": 40 }
+  ],
+  "blocks": [
+    { "type": "photo", "name": "Photo client", "settings": [
+      { "type": "image_picker", "id": "image", "label": "Image" }
+    ] },
+    { "type": "review", "name": "Avis", "settings": [
+      { "type": "range", "id": "rating", "label": "Étoiles", "min": 1, "max": 5, "step": 1, "default": 5 },
+      { "type": "text", "id": "name", "label": "Nom", "default": "Prénom N." },
+      { "type": "text", "id": "title", "label": "Titre", "default": "Le meilleur achat" },
+      { "type": "textarea", "id": "text", "label": "Texte", "default": "Texte de l'avis client. Racontez l'expérience : ce qui a changé pour l'animal, la facilité d'utilisation, la qualité." }
+    ] }
+  ],
+  "presets": [
+    {
+      "name": "Avis clients",
+      "blocks": [
+        { "type": "photo" }, { "type": "photo" }, { "type": "photo" }, { "type": "photo" }, { "type": "photo" }, { "type": "photo" },
+        { "type": "review", "settings": { "name": "Laura C.", "title": "Deuxième commande…", "text": "C'est ma deuxième commande. La première tourne depuis 7 mois sans aucun souci, alors j'en ai pris une pour ma sœur. Elle m'a écrit trois jours plus tard : son chien l'adore." } },
+        { "type": "review", "settings": { "name": "Rachel G.", "title": "Vraiment incroyable", "text": "Je n'en attendais pas grand-chose. J'avais essayé 2 autres fontaines qui ne marchaient pas. Trois semaines après, il y boit sans arrêt. Pompe silencieuse, facile à nettoyer." } },
+        { "type": "review", "settings": { "name": "Karine M.", "title": "LE BON CHOIX", "text": "Je viens de l'acheter et je ne pourrais pas être plus satisfaite. Très bien construite et, contrairement à d'autres, étonnamment facile à monter." } },
+        { "type": "review", "settings": { "name": "Éric C.", "title": "J'ai hésité…", "text": "J'ai hésité à cause du prix, mais aucun regret ! Notre golden l'adore. Plus besoin de remplir tous les jours et l'eau est toujours fraîche." } },
+        { "type": "review", "settings": { "name": "Samuel A.", "title": "La meilleure", "text": "Nous avions une fontaine en plastique très difficile à nettoyer. Celle-ci est super simple à entretenir, l'eau reste fraîche et nos chiens l'adorent !" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

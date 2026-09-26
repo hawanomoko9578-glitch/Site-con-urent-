@@ -1,0 +1,64 @@
+{%- assign half = section.blocks.size | plus: 1 | divided_by: 2 -%}
+<section class="fai section-pad">
+  <div class="page-width">
+    <div class="section-head center">
+      <h2 class="h2">{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}<div class="rte section-head__text">{{ section.settings.text }}</div>{%- endif -%}
+    </div>
+    <div class="fai__grid">
+      <div class="fai__col">
+        {%- for block in section.blocks limit: half -%}
+          <div class="fai__item" {{ block.shopify_attributes }}>
+            <h3 class="fai__title">{% render 'icon', name: 'check-circle' %}{{ block.settings.title }}</h3>
+            <p>{{ block.settings.text }}</p>
+          </div>
+        {%- endfor -%}
+      </div>
+      <div class="fai__media">
+        {% render 'media', image: section.settings.image, placeholder: 'lifestyle-1', sizes: '(min-width: 990px) 30vw, 100vw' %}
+      </div>
+      <div class="fai__col">
+        {%- for block in section.blocks offset: half -%}
+          <div class="fai__item" {{ block.shopify_attributes }}>
+            <h3 class="fai__title">{% render 'icon', name: 'check-circle' %}{{ block.settings.title }}</h3>
+            <p>{{ block.settings.text }}</p>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Avantages autour image",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Pourquoi les propriétaires nous choisissent" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Expliquez en une ou deux phrases le bénéfice principal de votre produit et pourquoi il change la vie de l'animal.</p>" },
+    { "type": "image_picker", "id": "image", "label": "Image centrale" }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Avantage",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titre", "default": "Avantage" },
+        { "type": "textarea", "id": "text", "label": "Texte", "default": "Décrivez cet avantage en une ou deux phrases courtes." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Avantages autour image",
+      "blocks": [
+        { "type": "feature", "settings": { "title": "Acier inoxydable", "text": "Acier inoxydable 304 de qualité médicale. Aucun plastique en contact avec l'eau." } },
+        { "type": "feature", "settings": { "title": "Filtration profonde", "text": "Filtre charbon actif 3 couches : élimine chlore, sédiments, poils et odeurs." } },
+        { "type": "feature", "settings": { "title": "Ultra silencieux", "text": "3 modes de débit, chacun plus silencieux qu'un téléphone en vibreur." } },
+        { "type": "feature", "settings": { "title": "Nettoyage facile", "text": "3 pièces seulement, lavables au lave-vaisselle." } },
+        { "type": "feature", "settings": { "title": "Grande capacité", "text": "4 L / 7 L : à remplir tous les 6 à 10 jours. Pour toutes les races." } },
+        { "type": "feature", "settings": { "title": "Mode sans fil", "text": "Batterie rechargeable qui tient des semaines. Aucun câble à mâchouiller." } }
+      ]
+    }
+  ]
+}
+{% endschema %}
