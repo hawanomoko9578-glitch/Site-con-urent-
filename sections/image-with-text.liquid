@@ -1,0 +1,100 @@
+{% render 'section-style', section: section %}
+<section class="section section--{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    <div class="image-text{% if section.settings.layout == 'right' %} image-text--reverse{% endif %}">
+      <div class="image-text__media reveal">
+        <div class="media media--{{ section.settings.ratio }}">
+          {%- if section.settings.video != blank -%}
+            {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true, image_size: '1200x' }}
+          {%- elsif section.settings.image != blank -%}
+            {{ section.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 50vw, 100vw', widths: '500, 800, 1100, 1400', alt: section.settings.image.alt | escape }}
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+        </div>
+      </div>
+      <div class="image-text__content reveal">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'eyebrow' -%}
+              <p class="eyebrow" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+            {%- when 'heading' -%}
+              <h2 class="h2" {{ block.shopify_attributes }}>{{ block.settings.heading }}</h2>
+            {%- when 'text' -%}
+              <div class="image-text__text rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+            {%- when 'check' -%}
+              <ul class="check-list" role="list" {{ block.shopify_attributes }}>
+                <li>
+                  <span class="check-list__icon">{% render 'icon', name: block.settings.icon %}</span>
+                  <div>
+                    <strong>{{ block.settings.title }}</strong>
+                    {%- if block.settings.text != blank %}<span class="text-muted">{{ block.settings.text }}</span>{% endif -%}
+                  </div>
+                </li>
+              </ul>
+            {%- when 'rating' -%}
+              <div {{ block.shopify_attributes }}>{% render 'stars', rating: block.settings.rating, count: block.settings.text %}</div>
+            {%- when 'button' -%}
+              <div {{ block.shopify_attributes }}>
+                <a href="{{ block.settings.link | default: '#' }}" class="button button--{{ block.settings.style }}">{{ block.settings.label }}</a>
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image avec texte",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "video", "id": "video", "label": "Vidéo (remplace l'image)", "info": "Vidéo hébergée sur Shopify, lue en boucle sans son" },
+    { "type": "select", "id": "ratio", "label": "Format de l'image", "options": [
+      { "value": "square", "label": "Carré" }, { "value": "portrait", "label": "Portrait" }, { "value": "landscape", "label": "Paysage" }, { "value": "adapt", "label": "Adapter à l'image" }
+    ], "default": "square" },
+    { "type": "select", "id": "layout", "label": "Position de l'image", "options": [
+      { "value": "left", "label": "Image à gauche" }, { "value": "right", "label": "Image à droite" }
+    ], "default": "left" },
+    {"type": "header", "content": "Style de la section"},
+    {"type": "select", "id": "color_scheme", "label": "Couleurs", "options": [{"value": "default", "label": "Fond principal"}, {"value": "alt", "label": "Fond secondaire"}, {"value": "dark", "label": "Fond couleur principale (sombre)"}], "default": "default"},
+    {"type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64},
+    {"type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64}
+  ],
+  "blocks": [
+    { "type": "eyebrow", "name": "Sur-titre", "limit": 1, "settings": [
+      { "type": "text", "id": "text", "label": "Texte", "default": "Pourquoi c'est important" }
+    ]},
+    { "type": "heading", "name": "Titre", "limit": 1, "settings": [
+      { "type": "text", "id": "heading", "label": "Titre", "default": "Un animal bien hydraté est un animal en meilleure santé" }
+    ]},
+    { "type": "text", "name": "Texte", "settings": [
+      { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Beaucoup de chats et de chiens ne boivent pas assez. L'eau qui bouge les attire naturellement : une fontaine les encourage à boire plus souvent, tout au long de la journée.</p>" }
+    ]},
+    { "type": "check", "name": "Point clé", "settings": [
+      {"type": "select", "id": "icon", "label": "Icône", "options": [{"value": "check", "label": "Coche"}, {"value": "check-circle", "label": "Coche ronde"}, {"value": "truck", "label": "Camion / livraison"}, {"value": "shield", "label": "Bouclier / sécurité"}, {"value": "refresh", "label": "Retour / échange"}, {"value": "heart", "label": "Cœur"}, {"value": "leaf", "label": "Feuille / naturel"}, {"value": "droplet", "label": "Goutte d'eau"}, {"value": "filter", "label": "Filtre"}, {"value": "quiet", "label": "Silencieux"}, {"value": "paw", "label": "Patte"}, {"value": "clock", "label": "Horloge"}, {"value": "gift", "label": "Cadeau"}, {"value": "chat", "label": "Bulle / support"}, {"value": "lock", "label": "Cadenas / paiement"}, {"value": "star", "label": "Étoile"}, {"value": "sparkle", "label": "Étincelle"}, {"value": "award", "label": "Médaille"}, {"value": "battery", "label": "Batterie"}, {"value": "recycle", "label": "Recyclage"}], "default": "check"},
+      { "type": "text", "id": "title", "label": "Titre", "default": "Soutient les reins et la digestion" },
+      { "type": "text", "id": "text", "label": "Texte" }
+    ]},
+    { "type": "rating", "name": "Note", "limit": 1, "settings": [
+      { "type": "range", "id": "rating", "label": "Note", "min": 1, "max": 5, "step": 0.1, "default": 4.8 },
+      { "type": "text", "id": "text", "label": "Texte", "default": "Plus de 10 000 avis clients" }
+    ]},
+    { "type": "button", "name": "Bouton", "limit": 2, "settings": [
+      { "type": "text", "id": "label", "label": "Texte", "default": "En savoir plus" },
+      { "type": "url", "id": "link", "label": "Lien" },
+      { "type": "select", "id": "style", "label": "Style", "options": [
+        { "value": "primary", "label": "Principal" }, { "value": "accent", "label": "Accent" }, { "value": "secondary", "label": "Contour" }
+      ], "default": "primary" }
+    ]}
+  ],
+  "presets": [{ "name": "Image avec texte", "blocks": [
+    { "type": "eyebrow" }, { "type": "heading" }, { "type": "text" },
+    { "type": "check", "settings": { "title": "Soutient les reins et la digestion" } },
+    { "type": "check", "settings": { "title": "Pelage plus brillant, plus d'énergie" } },
+    { "type": "check", "settings": { "title": "Moins de visites chez le vétérinaire" } },
+    { "type": "button" }
+  ]}]
+}
+{% endschema %}

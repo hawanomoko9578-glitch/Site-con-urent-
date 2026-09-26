@@ -1,0 +1,73 @@
+{%- style -%}
+  #shopify-section-{{ section.id }} .announcement-bar { --ab-bg: {{ section.settings.bg }}; --ab-text: {{ section.settings.text }}; }
+{%- endstyle -%}
+{%- if section.blocks.size > 0 -%}
+  <div
+    class="announcement-bar{% if section.settings.layout == 'inline' %} announcement-bar--inline{% endif %}"
+    role="region"
+    aria-label="{{ 'sections.announcement.label' | t }}"
+    data-announcement-bar
+    data-speed="{{ section.settings.speed }}"
+  >
+    <div class="page-width announcement-bar__inner">
+      {%- for block in section.blocks -%}
+        <div class="announcement-bar__slide{% if forloop.first %} is-active{% endif %}" {{ block.shopify_attributes }}>
+          {%- if block.settings.icon != 'none' -%}{% render 'icon', name: block.settings.icon, size: 18 %}{%- endif -%}
+          {%- if block.settings.link != blank -%}
+            <a href="{{ block.settings.link }}">{{ block.settings.text }}</a>
+          {%- else -%}
+            <span>{{ block.settings.text }}</span>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Barre d'annonces",
+  "class": "section-announcement",
+  "enabled_on": { "groups": ["header"] },
+  "max_blocks": 6,
+  "settings": [
+    { "type": "color", "id": "bg", "label": "Couleur de fond", "default": "#1F4E5F" },
+    { "type": "color", "id": "text", "label": "Couleur du texte", "default": "#FFFFFF" },
+    { "type": "select", "id": "layout", "label": "Affichage sur ordinateur", "options": [
+      { "value": "rotate", "label": "Défilement un par un" },
+      { "value": "inline", "label": "Tous côte à côte" }
+    ], "default": "rotate" },
+    { "type": "range", "id": "speed", "label": "Vitesse de rotation", "min": 2, "max": 10, "step": 1, "unit": "s", "default": 4 }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Annonce",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Texte", "default": "Livraison gratuite dès 50 €" },
+        { "type": "url", "id": "link", "label": "Lien" },
+        { "type": "select", "id": "icon", "label": "Icône", "options": [
+          { "value": "none", "label": "Aucune" },
+          { "value": "truck", "label": "Camion" },
+          { "value": "shield", "label": "Bouclier" },
+          { "value": "refresh", "label": "Retour" },
+          { "value": "gift", "label": "Cadeau" },
+          { "value": "star", "label": "Étoile" },
+          { "value": "clock", "label": "Horloge" },
+          { "value": "heart", "label": "Cœur" },
+          { "value": "paw", "label": "Patte" },
+          { "value": "sparkle", "label": "Étincelle" }
+        ], "default": "none" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Barre d'annonces",
+      "blocks": [
+        { "type": "announcement" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,72 @@
+{% render 'section-style', section: section %}
+{%- liquid
+  assign half = section.blocks.size | plus: 1 | divided_by: 2
+-%}
+<section class="section section--{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    {% render 'section-heading', section: section %}
+    <div class="feature-split">
+      <div class="feature-split__col feature-split__col--left">
+        {%- for block in section.blocks limit: half -%}
+          <div class="feature-split__item reveal" {{ block.shopify_attributes }}>
+            <span class="icon-item__icon" style="margin:0;flex-shrink:0">{% render 'icon', name: block.settings.icon %}</span>
+            <div><h3>{{ block.settings.title }}</h3><p>{{ block.settings.text }}</p></div>
+          </div>
+        {%- endfor -%}
+      </div>
+      <div class="reveal">
+        <div class="media media--{{ section.settings.ratio }}" style="background:transparent">
+          {%- if section.settings.image != blank -%}
+            {{ section.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 35vw, 100vw', widths: '400, 700, 1000', style: 'object-fit: contain', alt: section.settings.image.alt }}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+        </div>
+      </div>
+      <div class="feature-split__col">
+        {%- for block in section.blocks offset: half -%}
+          <div class="feature-split__item reveal" {{ block.shopify_attributes }}>
+            <span class="icon-item__icon" style="margin:0;flex-shrink:0">{% render 'icon', name: block.settings.icon %}</span>
+            <div><h3>{{ block.settings.title }}</h3><p>{{ block.settings.text }}</p></div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Atouts autour produit",
+  "settings": [
+    {"type": "header", "content": "En-tête de section"},
+    {"type": "text", "id": "subheading", "label": "Sur-titre"},
+    {"type": "text", "id": "heading", "label": "Titre", "default": "Titre de la section"},
+    {"type": "richtext", "id": "description", "label": "Description"},
+    {"type": "select", "id": "heading_align", "label": "Alignement du titre", "options": [{"value": "center", "label": "Centré"}, {"value": "left", "label": "Gauche"}], "default": "center"},
+    { "type": "image_picker", "id": "image", "label": "Image centrale (produit détouré conseillé)" },
+    { "type": "select", "id": "ratio", "label": "Format de l'image", "options": [
+      { "value": "square", "label": "Carré" }, { "value": "portrait", "label": "Portrait" }
+    ], "default": "square" },
+    {"type": "header", "content": "Style de la section"},
+    {"type": "select", "id": "color_scheme", "label": "Couleurs", "options": [{"value": "default", "label": "Fond principal"}, {"value": "alt", "label": "Fond secondaire"}, {"value": "dark", "label": "Fond couleur principale (sombre)"}], "default": "default"},
+    {"type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64},
+    {"type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64}
+  ],
+  "blocks": [
+    { "type": "feature", "name": "Caractéristique", "settings": [
+      {"type": "select", "id": "icon", "label": "Icône", "options": [{"value": "check", "label": "Coche"}, {"value": "check-circle", "label": "Coche ronde"}, {"value": "truck", "label": "Camion / livraison"}, {"value": "shield", "label": "Bouclier / sécurité"}, {"value": "refresh", "label": "Retour / échange"}, {"value": "heart", "label": "Cœur"}, {"value": "leaf", "label": "Feuille / naturel"}, {"value": "droplet", "label": "Goutte d'eau"}, {"value": "filter", "label": "Filtre"}, {"value": "quiet", "label": "Silencieux"}, {"value": "paw", "label": "Patte"}, {"value": "clock", "label": "Horloge"}, {"value": "gift", "label": "Cadeau"}, {"value": "chat", "label": "Bulle / support"}, {"value": "lock", "label": "Cadenas / paiement"}, {"value": "star", "label": "Étoile"}, {"value": "sparkle", "label": "Étincelle"}, {"value": "award", "label": "Médaille"}, {"value": "battery", "label": "Batterie"}, {"value": "recycle", "label": "Recyclage"}], "default": "check-circle"},
+      { "type": "text", "id": "title", "label": "Titre", "default": "Caractéristique" },
+      { "type": "textarea", "id": "text", "label": "Texte", "default": "Une courte description de cette caractéristique." }
+    ]}
+  ],
+  "presets": [{ "name": "Atouts autour produit", "settings": { "subheading": "Conçue dans les moindres détails", "heading": "Tout ce dont votre animal a besoin" }, "blocks": [
+    { "type": "feature", "settings": { "icon": "filter", "title": "Filtration en 3 couches", "text": "Retient poils, poussières et impuretés pour une eau toujours propre." } },
+    { "type": "feature", "settings": { "icon": "quiet", "title": "Ultra-silencieuse", "text": "Une pompe presque inaudible, même la nuit." } },
+    { "type": "feature", "settings": { "icon": "shield", "title": "Acier inoxydable", "text": "Hygiénique, sans BPA et résistant aux bactéries." } },
+    { "type": "feature", "settings": { "icon": "droplet", "title": "Grande capacité", "text": "Plusieurs jours d'autonomie entre deux remplissages." } },
+    { "type": "feature", "settings": { "icon": "refresh", "title": "Facile à nettoyer", "text": "Se démonte en quelques secondes, passe au lave-vaisselle." } },
+    { "type": "feature", "settings": { "icon": "battery", "title": "Sans fil", "text": "Batterie longue durée : placez-la où vous voulez." } }
+  ]}]
+}
+{% endschema %}

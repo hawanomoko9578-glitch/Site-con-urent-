@@ -1,0 +1,40 @@
+{
+  "type": "footer",
+  "name": "Groupe pied de page",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "brand": {
+          "type": "brand",
+          "settings": {}
+        },
+        "menu": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Informations",
+            "menu": "footer"
+          }
+        },
+        "contact": {
+          "type": "text",
+          "settings": {}
+        },
+        "news": {
+          "type": "newsletter",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "brand",
+        "menu",
+        "contact",
+        "news"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

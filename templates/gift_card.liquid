@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{{ 'gift_card.title' | t }} &ndash; {{ shop.name }}</title>
+    <meta name="robots" content="noindex">
+    {{ content_for_header }}
+    {% render 'css-variables' %}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+  </head>
+  <body>
+    <main class="page-width gift-card">
+      <p class="h3">{{ shop.name }}</p>
+      <h1 class="h2">{{ 'gift_card.title' | t }}</h1>
+      <p class="price__regular" style="font-size:3.2rem">{{ gift_card.balance | money_with_currency }}</p>
+      {%- if gift_card.enabled == false or gift_card.expired -%}
+        <p class="form-message form-message--error">{{ 'gift_card.expired' | t }}</p>
+      {%- elsif gift_card.expires_on -%}
+        <p class="text-muted">{{ 'gift_card.expires_on' | t: date: gift_card.expires_on }}</p>
+      {%- endif -%}
+      <div class="gift-card__code">{{ gift_card.code | format_code }}</div>
+      {%- if gift_card.pass_url -%}
+        <p><a href="{{ gift_card.pass_url }}"><img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" width="120" height="40" alt="Apple Wallet" loading="lazy" style="margin:0 auto"></a></p>
+      {%- endif -%}
+      <p><a href="{{ shop.url }}" class="button button--primary">{{ 'gift_card.shop' | t }}</a></p>
+      <p><button type="button" class="link" onclick="window.print()">{{ 'gift_card.print' | t }}</button></p>
+    </main>
+  </body>
+</html>

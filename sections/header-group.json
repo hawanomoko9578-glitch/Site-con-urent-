@@ -1,0 +1,46 @@
+{
+  "type": "header",
+  "name": "Groupe en-tête",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "a1": {
+          "type": "announcement",
+          "settings": {
+            "text": "Livraison offerte partout en France",
+            "icon": "truck"
+          }
+        },
+        "a2": {
+          "type": "announcement",
+          "settings": {
+            "text": "Satisfait ou remboursé pendant 365 jours",
+            "icon": "refresh"
+          }
+        },
+        "a3": {
+          "type": "announcement",
+          "settings": {
+            "text": "Plus de 10 000 animaux déjà conquis",
+            "icon": "paw"
+          }
+        }
+      },
+      "block_order": [
+        "a1",
+        "a2",
+        "a3"
+      ],
+      "settings": {}
+    },
+    "header": {
+      "type": "header",
+      "settings": {}
+    }
+  },
+  "order": [
+    "announcement",
+    "header"
+  ]
+}

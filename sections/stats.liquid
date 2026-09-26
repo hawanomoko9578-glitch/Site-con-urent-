@@ -1,0 +1,48 @@
+{% render 'section-style', section: section %}
+<section class="section section--{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    {% render 'section-heading', section: section %}
+    <div class="stats" style="--cols: {{ section.blocks.size | at_most: 4 | at_least: 1 }}; --cols-mobile: {{ section.settings.columns_mobile }};">
+      {%- for block in section.blocks -%}
+        <div class="stat reveal" {{ block.shopify_attributes }}>
+          <div class="stat__value">{{ block.settings.value }}</div>
+          <p class="stat__label">{{ block.settings.label }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.note != blank -%}
+      <p class="text-center text-muted" style="font-size:1.2rem;margin-top:2.4rem">{{ section.settings.note }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Chiffres clés",
+  "max_blocks": 4,
+  "settings": [
+    {"type": "header", "content": "En-tête de section"},
+    {"type": "text", "id": "subheading", "label": "Sur-titre"},
+    {"type": "text", "id": "heading", "label": "Titre", "default": "Titre de la section"},
+    {"type": "richtext", "id": "description", "label": "Description"},
+    {"type": "select", "id": "heading_align", "label": "Alignement du titre", "options": [{"value": "center", "label": "Centré"}, {"value": "left", "label": "Gauche"}], "default": "center"},
+    { "type": "range", "id": "columns_mobile", "label": "Colonnes (mobile)", "min": 1, "max": 2, "step": 1, "default": 1 },
+    { "type": "text", "id": "note", "label": "Note de bas de section", "default": "*Résultats d'une enquête interne auprès de nos clients." },
+    {"type": "header", "content": "Style de la section"},
+    {"type": "select", "id": "color_scheme", "label": "Couleurs", "options": [{"value": "default", "label": "Fond principal"}, {"value": "alt", "label": "Fond secondaire"}, {"value": "dark", "label": "Fond couleur principale (sombre)"}], "default": "default"},
+    {"type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64},
+    {"type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64}
+  ],
+  "blocks": [
+    { "type": "stat", "name": "Chiffre", "settings": [
+      { "type": "text", "id": "value", "label": "Valeur", "default": "93 %" },
+      { "type": "textarea", "id": "label", "label": "Description", "default": "des propriétaires constatent que leur animal boit davantage" }
+    ]}
+  ],
+  "presets": [{ "name": "Chiffres clés", "settings": { "heading": "Des résultats visibles", "color_scheme": "alt" }, "blocks": [
+    { "type": "stat", "settings": { "value": "93 %", "label": "voient leur animal boire davantage dès la première semaine*" } },
+    { "type": "stat", "settings": { "value": "89 %", "label": "trouvent l'eau plus propre qu'avec une gamelle*" } },
+    { "type": "stat", "settings": { "value": "96 %", "label": "la recommanderaient à un proche*" } }
+  ]}]
+}
+{% endschema %}

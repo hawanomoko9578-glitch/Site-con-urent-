@@ -1,0 +1,55 @@
+{% render 'section-style', section: section %}
+<section class="section">
+  <div class="page-width">
+    <h1 class="page-title">{{ 'sections.cart.title' | t }}</h1>
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post" id="CartForm" class="cart-page">
+        <div>
+          {% render 'shipping-bar' %}
+          {% render 'cart-line-items', context: 'page' %}
+          <noscript><button type="submit" name="update" class="button button--secondary button--small" style="margin-top:1.6rem">{{ 'sections.cart.update' | t }}</button></noscript>
+        </div>
+        <div class="cart-page__summary">
+          {%- if settings.cart_show_note -%}
+            <div class="cart-note field">
+              <label for="CartNote">{{ 'sections.cart.note' | t }}</label>
+              <textarea id="CartNote" name="note">{{ cart.note }}</textarea>
+            </div>
+          {%- endif -%}
+          {%- for discount in cart.cart_level_discount_applications -%}
+            <p class="cart-item__discount">{{ discount.title }} (-{{ discount.total_allocated_amount | money }})</p>
+          {%- endfor -%}
+          <div class="cart-totals">
+            <span>{{ 'sections.cart.subtotal' | t }}</span>
+            <span>{{ cart.total_price | money_with_currency }}</span>
+          </div>
+          <p class="cart-totals__note">{{ 'sections.cart.taxes_note' | t }}</p>
+          <button type="submit" name="checkout" class="button button--primary button--full button--large">
+            {% render 'icon', name: 'lock', size: 20 %} {{ 'sections.cart.checkout' | t }}
+          </button>
+          {%- if additional_checkout_buttons -%}
+            <div style="margin-top:1.2rem">{{ content_for_additional_checkout_buttons }}</div>
+          {%- endif -%}
+          {%- if settings.cart_trust_text != blank -%}
+            <div class="cart-trust rte">{{ settings.cart_trust_text }}</div>
+          {%- endif -%}
+        </div>
+      </form>
+    {%- else -%}
+      <div class="cart-empty">
+        <p>{{ 'sections.cart.empty' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="button button--primary">{{ 'sections.cart.continue' | t }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Panier",
+  "settings": [
+    { "type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 }
+  ]
+}
+{% endschema %}

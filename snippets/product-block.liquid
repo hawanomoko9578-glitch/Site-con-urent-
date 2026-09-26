@@ -1,0 +1,286 @@
+{%- comment -%}
+  Rendu d'un bloc de la fiche produit (partagé par main-product et featured-product).
+  Paramètres : block, product, section, form_id
+{%- endcomment -%}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- case block.type -%}
+
+  {%- when '@app' -%}
+    {% render block %}
+
+  {%- when 'eyebrow' -%}
+    <p class="eyebrow" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+
+  {%- when 'title' -%}
+    {%- if section.settings.is_main -%}
+      <h1 class="product__title h2" {{ block.shopify_attributes }}>{{ product.title }}</h1>
+    {%- else -%}
+      <h2 class="product__title h2" {{ block.shopify_attributes }}>
+        <a href="{{ product.url }}" style="text-decoration:none">{{ product.title }}</a>
+      </h2>
+    {%- endif -%}
+
+  {%- when 'rating' -%}
+    {%- liquid
+      assign r = product.metafields.reviews.rating.value.rating | default: block.settings.rating
+      assign c = block.settings.text
+      if product.metafields.reviews.rating_count != blank
+        assign c = product.metafields.reviews.rating_count | append: ' ' | append: block.settings.count_suffix
+      endif
+    -%}
+    <div class="product__rating" {{ block.shopify_attributes }}>
+      {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}">{%- endif -%}
+      {% render 'stars', rating: r, count: c, size: 18 %}
+      {%- if block.settings.link != blank -%}</a>{%- endif -%}
+    </div>
+
+  {%- when 'price' -%}
+    <div {{ block.shopify_attributes }}>
+      {% render 'price', product: product, show_badge: true, class: 'price--large' %}
+      {%- if block.settings.show_taxes -%}
+        <p class="text-muted" style="font-size:1.3rem;margin:.4rem 0 0">
+          {%- if cart.taxes_included -%}{{ 'products.product.taxes_included' | t }}{%- else -%}{{ 'products.product.taxes_excluded' | t }}{%- endif -%}
+          {%- if shop.shipping_policy.body != blank %} · <a href="{{ shop.shipping_policy.url }}">{{ 'products.product.shipping_policy' | t }}</a>{%- endif -%}
+        </p>
+      {%- endif -%}
+    </div>
+
+  {%- when 'text' -%}
+    <div class="product__text rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+
+  {%- when 'description' -%}
+    <div class="product__text rte" {{ block.shopify_attributes }}>{{ product.description }}</div>
+
+  {%- when 'benefits' -%}
+    <ul class="product__benefits" role="list" {{ block.shopify_attributes }}>
+      {%- for i in (1..6) -%}
+        {%- assign key = 'benefit_' | append: i -%}
+        {%- if block.settings[key] != blank -%}
+          <li>{% render 'icon', name: 'check-circle' %}<span>{{ block.settings[key] }}</span></li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+
+  {%- when 'variant_picker' -%}
+    {%- unless product.has_only_default_variant -%}
+      <div class="variant-picker" data-variant-picker {{ block.shopify_attributes }}>
+        {%- for option in product.options_with_values -%}
+          {%- if block.settings.style == 'dropdown' -%}
+            <div class="field" data-option-index="{{ forloop.index0 }}">
+              <label for="Option-{{ section.id }}-{{ forloop.index0 }}">{{ option.name }}</label>
+              <select class="select" id="Option-{{ section.id }}-{{ forloop.index0 }}" name="options[{{ option.name | escape }}]">
+                {%- for value in option.values -%}
+                  <option value="{{ value | escape }}"{% if option.selected_value == value %} selected{% endif %}>{{ value }}</option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- else -%}
+            <fieldset data-option-index="{{ forloop.index0 }}">
+              <legend>{{ option.name }} : <span data-selected-value="{{ forloop.index0 }}" style="font-weight:400">{{ option.selected_value }}</span></legend>
+              <div class="variant-picker__options">
+                {%- assign option_index = forloop.index0 -%}
+                {%- for value in option.values -%}
+                  <div class="variant-pill">
+                    <input
+                      type="radio"
+                      id="{{ section.id }}-{{ option_index }}-{{ forloop.index0 }}"
+                      name="{{ section.id }}-option-{{ option_index }}"
+                      value="{{ value | escape }}"
+                      {% if option.selected_value == value %}checked{% endif %}
+                    >
+                    <label for="{{ section.id }}-{{ option_index }}-{{ forloop.index0 }}">
+                      {%- if value.swatch -%}
+                        {%- if value.swatch.image -%}
+                          <span class="variant-pill__swatch" style="--swatch: url({{ value.swatch.image | image_url: width: 60 }})"></span>
+                        {%- elsif value.swatch.color -%}
+                          <span class="variant-pill__swatch" style="--swatch: {{ value.swatch.color }}"></span>
+                        {%- endif -%}
+                      {%- endif -%}
+                      {{ value }}
+                    </label>
+                  </div>
+                {%- endfor -%}
+              </div>
+            </fieldset>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endunless -%}
+
+  {%- when 'bundles' -%}
+    <div class="bundle-options" role="radiogroup" aria-label="{{ block.settings.heading | escape }}" {{ block.shopify_attributes }}>
+      {%- if block.settings.heading != blank -%}<p style="font-weight:700;margin:0">{{ block.settings.heading }}</p>{%- endif -%}
+      {%- for i in (1..3) -%}
+        {%- liquid
+          assign qkey = 'qty_' | append: i
+          assign tkey = 'title_' | append: i
+          assign skey = 'subtitle_' | append: i
+          assign dkey = 'discount_' | append: i
+          assign lkey = 'label_' | append: i
+          assign qty = block.settings[qkey]
+          assign discount = block.settings[dkey]
+          assign full = current_variant.price | times: qty
+          assign pct = 100 | minus: discount
+          assign discounted = full | times: pct | divided_by: 100
+          if current_variant.compare_at_price > current_variant.price
+            assign compare_total = current_variant.compare_at_price | times: qty
+          else
+            assign compare_total = full
+          endif
+        -%}
+        {%- if qty > 0 and block.settings[tkey] != blank -%}
+          <div class="bundle-option" data-bundle-option data-qty="{{ qty }}" data-discount="{{ discount }}">
+            <input type="radio" id="Bundle-{{ section.id }}-{{ i }}" name="bundle-{{ section.id }}" value="{{ qty }}"{% if i == block.settings.default_option %} checked{% endif %}>
+            <label for="Bundle-{{ section.id }}-{{ i }}">
+              <span class="bundle-option__radio"></span>
+              <span>
+                <span class="bundle-option__title">{{ block.settings[tkey] }}</span>
+                {%- if block.settings[skey] != blank -%}<br><span class="bundle-option__subtitle">{{ block.settings[skey] }}</span>{%- endif -%}
+              </span>
+              <span class="bundle-option__price">
+                <s data-bundle-compare>{% if compare_total > discounted %}{{ compare_total | money }}{% endif %}</s>
+                <strong data-bundle-price>{{ discounted | money }}</strong>
+              </span>
+            </label>
+            {%- if block.settings[lkey] != blank -%}
+              <span class="badge badge--accent bundle-option__label">{{ block.settings[lkey] }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+  {%- when 'stock' -%}
+    {%- liquid
+      assign inventory = current_variant.inventory_quantity
+      assign tracked = false
+      if current_variant.inventory_management == 'shopify'
+        assign tracked = true
+      endif
+    -%}
+    {%- if current_variant.available -%}
+      {%- if tracked and inventory > 0 and inventory <= block.settings.threshold -%}
+        <p class="product__stock product__stock--low" {{ block.shopify_attributes }}>
+          <span class="product__stock-dot"></span>{{ block.settings.low_text | replace: '[quantite]', inventory }}
+        </p>
+      {%- else -%}
+        <p class="product__stock" {{ block.shopify_attributes }}>
+          <span class="product__stock-dot"></span>{{ block.settings.in_stock_text }}
+        </p>
+      {%- endif -%}
+    {%- endif -%}
+
+  {%- when 'delivery' -%}
+    {%- liquid
+      assign now = 'now' | date: '%s' | plus: 0
+      assign min_s = block.settings.min_days | times: 86400 | plus: now
+      assign max_s = block.settings.max_days | times: 86400 | plus: now
+    -%}
+    <div class="product__highlight" {{ block.shopify_attributes }}>
+      {% render 'icon', name: 'truck' %}
+      <p>
+        {{ block.settings.text }}
+        <strong>{{ min_s | date: format: 'delivery_date' }} – {{ max_s | date: format: 'delivery_date' }}</strong>
+      </p>
+    </div>
+
+  {%- when 'highlight' -%}
+    <div class="product__highlight" {{ block.shopify_attributes }}>
+      {% render 'icon', name: block.settings.icon %}
+      <div class="rte">{{ block.settings.text }}</div>
+    </div>
+
+  {%- when 'quantity' -%}
+    <div {{ block.shopify_attributes }}>
+      <label class="visually-hidden" for="Quantity-{{ section.id }}">{{ 'products.product.quantity' | t }}</label>
+      <div class="quantity">
+        <button type="button" data-qty-btn="minus" aria-label="{{ 'products.product.decrease' | t }}">{% render 'icon', name: 'minus' %}</button>
+        <input type="number" id="Quantity-{{ section.id }}" value="1" min="1" data-main-qty>
+        <button type="button" data-qty-btn="plus" aria-label="{{ 'products.product.increase' | t }}">{% render 'icon', name: 'plus' %}</button>
+      </div>
+    </div>
+
+  {%- when 'buy_buttons' -%}
+    <div class="product-form" {{ block.shopify_attributes }}>
+      {%- form 'product', product, id: form_id, class: 'product-form__form', novalidate: 'novalidate', data-product-form: 'true' -%}
+        <input type="hidden" name="id" value="{{ current_variant.id }}">
+        {%- liquid
+          assign default_qty = 1
+          for b in section.blocks
+            if b.type == 'bundles'
+              assign dq = 'qty_' | append: b.settings.default_option
+              assign default_qty = b.settings[dq] | default: 1
+              break
+            endif
+          endfor
+        -%}
+        <input type="hidden" name="quantity" value="{{ default_qty }}">
+        <div class="product-form__buttons">
+          <button
+            type="submit"
+            name="add"
+            class="button button--{{ block.settings.style }} button--full button--large"
+            data-add-button
+            data-label="{{ block.settings.label | escape }}"
+            {% unless current_variant.available %}disabled{% endunless %}
+          >
+            <span data-add-text>
+              {%- if current_variant.available -%}{{ block.settings.label }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+            </span>
+          </button>
+          {%- if block.settings.show_dynamic_checkout -%}
+            {{ form | payment_button }}
+          {%- endif -%}
+        </div>
+        <p class="product-form__error" data-form-error role="alert" hidden></p>
+      {%- endform -%}
+    </div>
+
+  {%- when 'trust' -%}
+    <div class="trust-row" {{ block.shopify_attributes }}>
+      {%- for i in (1..4) -%}
+        {%- assign tk = 'text_' | append: i -%}
+        {%- assign ik = 'icon_' | append: i -%}
+        {%- if block.settings[tk] != blank -%}
+          <span>{% render 'icon', name: block.settings[ik] %}{{ block.settings[tk] }}</span>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+  {%- when 'payment' -%}
+    <div class="product__payment" {{ block.shopify_attributes }}>
+      {%- if block.settings.text != blank -%}<p class="text-muted" style="font-size:1.3rem;margin-bottom:.8rem">{{ block.settings.text }}</p>{%- endif -%}
+      <ul class="payment-icons" role="list">
+        {%- for type in shop.enabled_payment_types -%}<li>{{ type | payment_type_svg_tag }}</li>{%- endfor -%}
+      </ul>
+    </div>
+
+  {%- when 'image' -%}
+    {%- if block.settings.image != blank -%}
+      <div {{ block.shopify_attributes }}>
+        {{ block.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy', style: 'border-radius: var(--radius-card)', alt: block.settings.image.alt }}
+      </div>
+    {%- endif -%}
+
+  {%- when 'collapsible_tab' -%}
+    <div class="product__accordions" {{ block.shopify_attributes }}>
+      <details class="accordion"{% if block.settings.open %} open{% endif %}>
+        <summary>
+          <span class="accordion__title">{% if block.settings.icon != 'none' %}{% render 'icon', name: block.settings.icon, size: 22 %}{% endif %}{{ block.settings.heading }}</span>
+          {% render 'icon', name: 'plus', size: 20 %}
+        </summary>
+        <div class="accordion__content rte">
+          {%- if block.settings.source == 'description' -%}
+            {{ product.description }}
+          {%- else -%}
+            {{ block.settings.content }}
+            {%- if block.settings.page != blank -%}{{ block.settings.page.content }}{%- endif -%}
+          {%- endif -%}
+        </div>
+      </details>
+    </div>
+
+  {%- when 'custom_liquid' -%}
+    <div {{ block.shopify_attributes }}>{{ block.settings.custom_liquid }}</div>
+
+{%- endcase -%}

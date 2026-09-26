@@ -1,0 +1,31 @@
+{%- style -%}
+  #shopify-section-{{ section.id }} .countdown-bar { --cb-bg: {{ section.settings.bg }}; --cb-text: {{ section.settings.text }}; }
+{%- endstyle -%}
+<div class="countdown-bar" data-countdown-wrapper data-hide-on-end="{{ section.settings.hide_on_end }}">
+  <span>{{ section.settings.message }}</span>
+  <span
+    class="countdown"
+    data-countdown
+    data-mode="{{ section.settings.mode }}"
+    {% if section.settings.end_date != blank %}data-end="{{ section.settings.end_date | escape }}"{% endif %}
+  ><span>00h</span><span>00m</span><span>00s</span></span>
+</div>
+
+{% schema %}
+{
+  "name": "Bandeau compte à rebours",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    { "type": "text", "id": "message", "label": "Message", "default": "L'offre du jour se termine dans" },
+    { "type": "select", "id": "mode", "label": "Type de compte à rebours", "options": [
+      { "value": "daily", "label": "Quotidien (jusqu'à minuit)" },
+      { "value": "date", "label": "Date précise" }
+    ], "default": "daily" },
+    { "type": "text", "id": "end_date", "label": "Date de fin", "info": "Format : 2026-12-31T23:59:00 (utilisé seulement en mode « Date précise »)" },
+    { "type": "checkbox", "id": "hide_on_end", "label": "Masquer à la fin", "default": true },
+    { "type": "color", "id": "bg", "label": "Couleur de fond", "default": "#C8452C" },
+    { "type": "color", "id": "text", "label": "Couleur du texte", "default": "#FFFFFF" }
+  ],
+  "presets": [{ "name": "Bandeau compte à rebours" }]
+}
+{% endschema %}

@@ -1,0 +1,43 @@
+{%- comment -%}
+  Paramètres : product (objet produit), variant (optionnel), show_badge (bool), class (optionnel)
+{%- endcomment -%}
+{%- liquid
+  if variant == blank
+    assign target = product.selected_or_first_available_variant
+  else
+    assign target = variant
+  endif
+  assign price = target.price
+  assign compare_at = target.compare_at_price
+  assign on_sale = false
+  if compare_at > price
+    assign on_sale = true
+  endif
+-%}
+<div class="price{% if on_sale %} price--on-sale{% endif %} {{ class }}" data-price-wrapper data-badge-style="{{ settings.sale_badge_style }}" data-sale-text="{{ 'products.product.on_sale' | t | escape }}">
+  <span class="price__regular" data-price>{{ price | money }}</span>
+  <s class="price__compare" data-compare-price{% unless on_sale %} hidden{% endunless %}>
+    {%- if on_sale %}{{ compare_at | money }}{% endif -%}
+  </s>
+  {%- if show_badge and settings.show_sale_badge -%}
+    <span class="badge badge--sale" data-sale-badge{% unless on_sale %} hidden{% endunless %}>
+      {%- if on_sale -%}
+        {%- case settings.sale_badge_style -%}
+          {%- when 'percent' -%}
+            {%- assign saving = compare_at | minus: price | times: 100.0 | divided_by: compare_at | round -%}
+            -{{ saving }}%
+          {%- when 'amount' -%}
+            {%- assign saving_money = compare_at | minus: price | money -%}
+            {{ 'products.product.save_amount' | t: amount: saving_money }}
+          {%- else -%}
+            {{ 'products.product.on_sale' | t }}
+        {%- endcase -%}
+      {%- endif -%}
+    </span>
+  {%- endif -%}
+  {%- if target.unit_price_measurement -%}
+    <small class="price__unit">
+      {{ target.unit_price | money }}/{%- if target.unit_price_measurement.reference_value != 1 -%}{{ target.unit_price_measurement.reference_value }}{%- endif -%}{{ target.unit_price_measurement.reference_unit }}
+    </small>
+  {%- endif -%}
+</div>

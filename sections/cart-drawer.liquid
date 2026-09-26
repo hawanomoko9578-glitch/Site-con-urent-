@@ -1,0 +1,76 @@
+<div class="drawer drawer--right cart-drawer" id="CartDrawer" aria-hidden="true">
+  <button class="drawer__overlay" type="button" data-drawer-close aria-label="{{ 'general.close' | t }}" tabindex="-1"></button>
+  <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="{{ 'sections.cart.title' | t }}" data-cart-drawer-inner>
+    <span hidden data-cart-count-value="{{ cart.item_count }}"></span>
+    <div class="drawer__header">
+      <h2>{{ 'sections.cart.title' | t }} ({{ cart.item_count }})</h2>
+      <button type="button" class="header-icon" data-drawer-close aria-label="{{ 'general.close' | t }}">{% render 'icon', name: 'close' %}</button>
+    </div>
+    <div class="drawer__body">
+      {%- if cart.item_count > 0 -%}
+        {% render 'shipping-bar' %}
+        {% render 'cart-line-items', context: 'drawer' %}
+        {%- if section.settings.upsell_product != blank and section.settings.upsell_product.available -%}
+          {%- assign upsell = section.settings.upsell_product -%}
+          {%- assign in_cart = false -%}
+          {%- for item in cart.items -%}{%- if item.product_id == upsell.id -%}{%- assign in_cart = true -%}{%- endif -%}{%- endfor -%}
+          {%- unless in_cart -%}
+            <div style="margin-top:2rem">
+              <p style="font-weight:700;margin-bottom:1rem">{{ section.settings.upsell_heading }}</p>
+              <div class="cart-item" style="border:1px solid var(--color-border);border-radius:var(--radius-card);padding:1.2rem">
+                <div class="cart-item__media">
+                  {%- if upsell.featured_media -%}{{ upsell.featured_media | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}
+                </div>
+                <div>
+                  <span class="cart-item__title">{{ upsell.title }}</span>
+                  {% render 'price', product: upsell %}
+                </div>
+                <form action="{{ routes.cart_add_url }}" method="post" data-product-form>
+                  <input type="hidden" name="id" value="{{ upsell.selected_or_first_available_variant.id }}">
+                  <button type="submit" class="button button--primary button--small">{{ 'sections.cart.add' | t }}</button>
+                </form>
+              </div>
+            </div>
+          {%- endunless -%}
+        {%- endif -%}
+      {%- else -%}
+        <div class="cart-empty">
+          <p class="h3">{{ 'sections.cart.empty' | t }}</p>
+          <a href="{{ section.settings.empty_link | default: routes.all_products_collection_url }}" class="button button--primary">{{ 'sections.cart.continue' | t }}</a>
+        </div>
+      {%- endif -%}
+    </div>
+    {%- if cart.item_count > 0 -%}
+      <div class="drawer__footer">
+        {%- for discount in cart.cart_level_discount_applications -%}
+          <p class="cart-item__discount">{{ discount.title }} (-{{ discount.total_allocated_amount | money }})</p>
+        {%- endfor -%}
+        <div class="cart-totals">
+          <span>{{ 'sections.cart.subtotal' | t }}</span>
+          <span>{{ cart.total_price | money_with_currency }}</span>
+        </div>
+        <p class="cart-totals__note">{{ 'sections.cart.taxes_note' | t }}</p>
+        <form action="{{ routes.cart_url }}" method="post">
+          <button type="submit" name="checkout" class="button button--primary button--full button--large">
+            {% render 'icon', name: 'lock', size: 20 %} {{ 'sections.cart.checkout' | t }}
+          </button>
+        </form>
+        {%- if settings.cart_trust_text != blank -%}
+          <div class="cart-trust rte">{{ settings.cart_trust_text }}</div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tiroir panier",
+  "settings": [
+    { "type": "paragraph", "content": "Le type de panier (tiroir ou page) se choisit dans Paramètres du thème > Panier." },
+    { "type": "url", "id": "empty_link", "label": "Lien du bouton « panier vide »" },
+    { "type": "product", "id": "upsell_product", "label": "Produit complémentaire suggéré" },
+    { "type": "text", "id": "upsell_heading", "label": "Titre du produit suggéré", "default": "Complétez votre commande" }
+  ]
+}
+{% endschema %}

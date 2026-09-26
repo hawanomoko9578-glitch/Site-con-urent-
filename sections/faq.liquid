@@ -1,0 +1,75 @@
+{% render 'section-style', section: section %}
+<section class="section section--{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    {% render 'section-heading', section: section %}
+    <div class="faq reveal">
+      {%- for block in section.blocks -%}
+        <details class="accordion" {{ block.shopify_attributes }}{% if forloop.first and section.settings.open_first %} open{% endif %}>
+          <summary><span class="accordion__title">{{ block.settings.question }}</span>{% render 'icon', name: 'plus', size: 20 %}</summary>
+          <div class="accordion__content rte">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+      {%- if section.settings.contact_text != blank -%}
+        <div class="faq-contact">
+          <p>{{ section.settings.contact_text }}</p>
+          {%- if section.settings.contact_label != blank -%}
+            <a class="button button--secondary" href="{{ section.settings.contact_link | default: '/pages/contact' }}">{{ section.settings.contact_label }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{%- if section.settings.schema_markup and section.blocks.size > 0 -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {%- for block in section.blocks -%}
+    {
+      "@type": "Question",
+      "name": {{ block.settings.question | json }},
+      "acceptedAnswer": { "@type": "Answer", "text": {{ block.settings.answer | strip_html | json }} }
+    }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [
+    {"type": "header", "content": "En-tête de section"},
+    {"type": "text", "id": "subheading", "label": "Sur-titre"},
+    {"type": "text", "id": "heading", "label": "Titre", "default": "Titre de la section"},
+    {"type": "richtext", "id": "description", "label": "Description"},
+    {"type": "select", "id": "heading_align", "label": "Alignement du titre", "options": [{"value": "center", "label": "Centré"}, {"value": "left", "label": "Gauche"}], "default": "center"},
+    { "type": "checkbox", "id": "open_first", "label": "Ouvrir la première question", "default": false },
+    { "type": "checkbox", "id": "schema_markup", "label": "Données structurées FAQ (SEO)", "default": true },
+    { "type": "text", "id": "contact_text", "label": "Texte de contact", "default": "Vous avez une autre question ?" },
+    { "type": "text", "id": "contact_label", "label": "Texte du bouton", "default": "Contactez-nous" },
+    { "type": "url", "id": "contact_link", "label": "Lien du bouton" },
+    {"type": "header", "content": "Style de la section"},
+    {"type": "select", "id": "color_scheme", "label": "Couleurs", "options": [{"value": "default", "label": "Fond principal"}, {"value": "alt", "label": "Fond secondaire"}, {"value": "dark", "label": "Fond couleur principale (sombre)"}], "default": "default"},
+    {"type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64},
+    {"type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64}
+  ],
+  "blocks": [
+    { "type": "question", "name": "Question", "settings": [
+      { "type": "text", "id": "question", "label": "Question", "default": "Votre question ?" },
+      { "type": "richtext", "id": "answer", "label": "Réponse", "default": "<p>Votre réponse.</p>" }
+    ]}
+  ],
+  "presets": [{ "name": "FAQ", "settings": { "subheading": "FAQ", "heading": "Questions fréquentes" }, "blocks": [
+    { "type": "question", "settings": { "question": "À quelle fréquence changer le filtre ?", "answer": "<p>Nous recommandons de remplacer le filtre toutes les 2 à 4 semaines selon le nombre d'animaux.</p>" } },
+    { "type": "question", "settings": { "question": "La fontaine est-elle bruyante ?", "answer": "<p>Non. La pompe est conçue pour être quasiment silencieuse, même dans une chambre.</p>" } },
+    { "type": "question", "settings": { "question": "Comment la nettoyer ?", "answer": "<p>Démontez-la en quelques secondes : les pièces en acier passent au lave-vaisselle. La pompe se rince simplement à l'eau.</p>" } },
+    { "type": "question", "settings": { "question": "Quels sont les délais de livraison ?", "answer": "<p>Les commandes sont expédiées sous 24 à 48 h. Comptez ensuite 3 à 7 jours ouvrés selon votre pays.</p>" } },
+    { "type": "question", "settings": { "question": "Et si mon animal ne l'aime pas ?", "answer": "<p>Vous bénéficiez de notre garantie satisfait ou remboursé : contactez-nous et nous nous occupons de tout.</p>" } }
+  ]}]
+}
+{% endschema %}

@@ -1,0 +1,17 @@
+<ul role="list">
+  {%- for link in menu.links -%}
+    <li>
+      <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>
+        {{ link.title }}
+        {%- if link.links != blank %}{% render 'icon', name: 'chevron-down', size: 16 %}{% endif -%}
+      </a>
+      {%- if link.links != blank -%}
+        <ul class="submenu" role="list">
+          {%- for child in link.links -%}
+            <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </li>
+  {%- endfor -%}
+</ul>

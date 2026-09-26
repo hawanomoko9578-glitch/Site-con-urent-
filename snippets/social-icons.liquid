@@ -1,0 +1,14 @@
+{%- assign networks = 'instagram,facebook,tiktok,youtube,pinterest,x' | split: ',' -%}
+<ul class="social-icons" role="list">
+  {%- for network in networks -%}
+    {%- assign key = 'social_' | append: network -%}
+    {%- assign link = settings[key] -%}
+    {%- if link != blank -%}
+      <li>
+        <a href="{{ link }}" target="_blank" rel="noopener" aria-label="{{ network | capitalize }}">
+          {% render 'icon', name: network, size: 20 %}
+        </a>
+      </li>
+    {%- endif -%}
+  {%- endfor -%}
+</ul>

@@ -1,0 +1,17 @@
+<section class="section">
+  <div class="page-width customer">
+    <h1 class="h2">{{ 'customer.register.title' | t }}</h1>
+    {%- form 'create_customer', novalidate: 'novalidate' -%}
+      {%- if form.errors -%}<div class="form-message form-message--error">{{ form.errors | default_errors }}</div>{%- endif -%}
+      <div class="field"><label for="RegisterFirstName">{{ 'customer.register.first_name' | t }}</label><input type="text" name="customer[first_name]" id="RegisterFirstName" autocomplete="given-name"></div>
+      <div class="field"><label for="RegisterLastName">{{ 'customer.register.last_name' | t }}</label><input type="text" name="customer[last_name]" id="RegisterLastName" autocomplete="family-name"></div>
+      <div class="field"><label for="RegisterEmail">{{ 'contact.email' | t }}</label><input type="email" name="customer[email]" id="RegisterEmail" autocomplete="email" required></div>
+      <div class="field"><label for="RegisterPassword">{{ 'password.password' | t }}</label><input type="password" name="customer[password]" id="RegisterPassword" autocomplete="new-password" required></div>
+      <button type="submit" class="button button--primary button--full">{{ 'customer.register.submit' | t }}</button>
+      <div class="customer__links"><a href="{{ routes.account_login_url }}">{{ 'customer.login.title' | t }}</a></div>
+    {%- endform -%}
+  </div>
+</section>
+{% schema %}
+{ "name": "Inscription", "settings": [] }
+{% endschema %}

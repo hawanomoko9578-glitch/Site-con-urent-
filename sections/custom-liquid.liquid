@@ -1,0 +1,20 @@
+{% render 'section-style', section: section %}
+<section class="section section--{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    {{ section.settings.custom_liquid }}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Code personnalisé",
+  "settings": [
+    { "type": "liquid", "id": "custom_liquid", "label": "Code Liquid / HTML", "info": "Pour intégrer un widget d'application (avis, Instagram…) ou du code sur mesure." },
+    {"type": "header", "content": "Style de la section"},
+    {"type": "select", "id": "color_scheme", "label": "Couleurs", "options": [{"value": "default", "label": "Fond principal"}, {"value": "alt", "label": "Fond secondaire"}, {"value": "dark", "label": "Fond couleur principale (sombre)"}], "default": "default"},
+    {"type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64},
+    {"type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64}
+  ],
+  "presets": [{ "name": "Code personnalisé" }]
+}
+{% endschema %}

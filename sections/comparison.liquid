@@ -1,0 +1,78 @@
+{% render 'section-style', section: section %}
+<section class="section section--{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    {% render 'section-heading', section: section %}
+    <div class="comparison reveal" role="table" aria-label="{{ section.settings.heading | escape }}">
+      <div class="comparison__row comparison__head" role="row">
+        <div class="comparison__cell" role="columnheader"></div>
+        <div class="comparison__cell comparison__cell--us" role="columnheader">
+          {%- if section.settings.us_logo != blank -%}
+            {{ section.settings.us_logo | image_url: width: 240 | image_tag: alt: section.settings.us_label | escape }}
+          {%- else -%}
+            {{ section.settings.us_label | default: shop.name }}
+          {%- endif -%}
+        </div>
+        <div class="comparison__cell" role="columnheader">{{ section.settings.them_label }}</div>
+      </div>
+      {%- for block in section.blocks -%}
+        <div class="comparison__row" role="row" {{ block.shopify_attributes }}>
+          <div class="comparison__cell" role="rowheader">{{ block.settings.feature }}</div>
+          <div class="comparison__cell comparison__cell--us" role="cell">
+            {%- if block.settings.us_text != blank -%}{{ block.settings.us_text }}
+            {%- elsif block.settings.us -%}{% render 'icon', name: 'check-circle', size: 28 %}<span class="visually-hidden">{{ 'general.yes' | t }}</span>
+            {%- else -%}{% render 'icon', name: 'x-circle', size: 28 %}<span class="visually-hidden">{{ 'general.no' | t }}</span>{%- endif -%}
+          </div>
+          <div class="comparison__cell" role="cell">
+            {%- if block.settings.them_text != blank -%}{{ block.settings.them_text }}
+            {%- elsif block.settings.them -%}{% render 'icon', name: 'check-circle', size: 28 %}<span class="visually-hidden">{{ 'general.yes' | t }}</span>
+            {%- else -%}{% render 'icon', name: 'x-circle', size: 28 %}<span class="visually-hidden">{{ 'general.no' | t }}</span>{%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.button_label != blank -%}
+      <p class="text-center" style="margin-top:3.2rem">
+        <a href="{{ section.settings.button_link | default: '#' }}" class="button button--accent button--large">{{ section.settings.button_label }}</a>
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Tableau comparatif",
+  "settings": [
+    {"type": "header", "content": "En-tête de section"},
+    {"type": "text", "id": "subheading", "label": "Sur-titre"},
+    {"type": "text", "id": "heading", "label": "Titre", "default": "Titre de la section"},
+    {"type": "richtext", "id": "description", "label": "Description"},
+    {"type": "select", "id": "heading_align", "label": "Alignement du titre", "options": [{"value": "center", "label": "Centré"}, {"value": "left", "label": "Gauche"}], "default": "center"},
+    { "type": "text", "id": "us_label", "label": "Nom de votre colonne", "default": "Notre fontaine" },
+    { "type": "image_picker", "id": "us_logo", "label": "Logo de votre colonne (optionnel)" },
+    { "type": "text", "id": "them_label", "label": "Nom de la colonne concurrente", "default": "Gamelle classique" },
+    { "type": "text", "id": "button_label", "label": "Texte du bouton" },
+    { "type": "url", "id": "button_link", "label": "Lien du bouton" },
+    {"type": "header", "content": "Style de la section"},
+    {"type": "select", "id": "color_scheme", "label": "Couleurs", "options": [{"value": "default", "label": "Fond principal"}, {"value": "alt", "label": "Fond secondaire"}, {"value": "dark", "label": "Fond couleur principale (sombre)"}], "default": "default"},
+    {"type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64},
+    {"type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64}
+  ],
+  "blocks": [
+    { "type": "row", "name": "Ligne", "settings": [
+      { "type": "text", "id": "feature", "label": "Critère", "default": "Critère" },
+      { "type": "checkbox", "id": "us", "label": "Nous : oui", "default": true },
+      { "type": "text", "id": "us_text", "label": "Nous : texte (remplace l'icône)" },
+      { "type": "checkbox", "id": "them", "label": "Eux : oui", "default": false },
+      { "type": "text", "id": "them_text", "label": "Eux : texte (remplace l'icône)" }
+    ]}
+  ],
+  "presets": [{ "name": "Tableau comparatif", "settings": { "subheading": "Comparez", "heading": "Pourquoi changer de gamelle ?" }, "blocks": [
+    { "type": "row", "settings": { "feature": "Eau filtrée en continu" } },
+    { "type": "row", "settings": { "feature": "Encourage à boire plus" } },
+    { "type": "row", "settings": { "feature": "Eau oxygénée et fraîche" } },
+    { "type": "row", "settings": { "feature": "Limite les bactéries" } },
+    { "type": "row", "settings": { "feature": "Facile à nettoyer", "them": true } },
+    { "type": "row", "settings": { "feature": "Garantie satisfait ou remboursé" } }
+  ]}]
+}
+{% endschema %}

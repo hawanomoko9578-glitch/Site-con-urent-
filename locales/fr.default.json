@@ -1,0 +1,209 @@
+{
+  "accessibility": {
+    "skip_to_content": "Aller au contenu"
+  },
+  "general": {
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "error": "Une erreur est survenue. Veuillez réessayer.",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "no": "Non",
+    "yes": "Oui",
+    "pagination": "Pagination",
+    "play_video": "Lire la vidéo",
+    "search": {
+      "title": "Recherche",
+      "placeholder": "Rechercher un produit…",
+      "submit": "Rechercher",
+      "results_count": {
+        "one": "{{ count }} résultat pour « {{ terms }} »",
+        "other": "{{ count }} résultats pour « {{ terms }} »"
+      }
+    }
+  },
+  "blogs": {
+    "article": {
+      "back": "Retour à {{ title }}"
+    },
+    "comments": {
+      "title": "Commentaires",
+      "leave": "Laisser un commentaire",
+      "post": "Publier",
+      "success": "Votre commentaire a été publié.",
+      "success_moderated": "Merci ! Votre commentaire sera publié après modération."
+    }
+  },
+  "contact": {
+    "name": "Nom",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "order": "Numéro de commande (facultatif)",
+    "message": "Message",
+    "send": "Envoyer",
+    "success": "Merci ! Nous vous répondons au plus vite."
+  },
+  "customer": {
+    "account": {
+      "title": "Mon compte",
+      "logout": "Se déconnecter",
+      "details": "Mes informations"
+    },
+    "activate": {
+      "title": "Activer votre compte",
+      "confirm": "Confirmer le mot de passe",
+      "submit": "Activer",
+      "decline": "Refuser l'invitation"
+    },
+    "addresses": {
+      "title": "Mes adresses",
+      "add": "Ajouter une adresse",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "delete_confirm": "Supprimer cette adresse ?",
+      "default": "Par défaut",
+      "set_default": "Définir comme adresse par défaut",
+      "save": "Enregistrer",
+      "company": "Société",
+      "address1": "Adresse",
+      "address2": "Complément d'adresse",
+      "city": "Ville",
+      "country": "Pays",
+      "province": "Région / État",
+      "zip": "Code postal",
+      "view": {
+        "one": "Voir mon adresse ({{ count }})",
+        "other": "Voir mes adresses ({{ count }})"
+      }
+    },
+    "login": {
+      "title": "Connexion",
+      "submit": "Se connecter",
+      "forgot": "Mot de passe oublié ?",
+      "guest": "Continuer en tant qu'invité"
+    },
+    "recover": {
+      "title": "Réinitialiser le mot de passe",
+      "submit": "Envoyer",
+      "success": "Un e-mail de réinitialisation vous a été envoyé."
+    },
+    "register": {
+      "title": "Créer un compte",
+      "first_name": "Prénom",
+      "last_name": "Nom",
+      "submit": "Créer mon compte"
+    },
+    "reset": {
+      "title": "Nouveau mot de passe",
+      "submit": "Réinitialiser"
+    },
+    "orders": {
+      "title": "Historique des commandes",
+      "none": "Vous n'avez pas encore passé de commande.",
+      "order": "Commande",
+      "date": "Date",
+      "payment": "Paiement",
+      "fulfillment": "Expédition",
+      "total": "Total"
+    },
+    "order": {
+      "title": "Commande {{ name }}",
+      "cancelled": "Cette commande a été annulée.",
+      "product": "Produit",
+      "price": "Prix",
+      "quantity": "Quantité",
+      "billing": "Adresse de facturation",
+      "shipping": "Adresse de livraison"
+    }
+  },
+  "gift_card": {
+    "title": "Votre carte cadeau",
+    "expired": "Cette carte cadeau a expiré ou est désactivée.",
+    "expires_on": "Expire le {{ date }}",
+    "print": "Imprimer",
+    "shop": "Commencer mes achats"
+  },
+  "localization": {
+    "country": "Pays / devise",
+    "language": "Langue"
+  },
+  "newsletter": {
+    "label": "Votre adresse e-mail",
+    "button": "S'inscrire",
+    "success": "Merci pour votre inscription !"
+  },
+  "password": {
+    "enter": "Accès réservé : entrer le mot de passe",
+    "password": "Mot de passe",
+    "submit": "Entrer"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Ajouter au panier",
+      "added": "Ajouté !",
+      "choose_options": "Choisir les options",
+      "decrease": "Diminuer la quantité",
+      "increase": "Augmenter la quantité",
+      "media_label": "Afficher l'image {{ index }}",
+      "on_sale": "Promo",
+      "quantity": "Quantité",
+      "rating_label": "Note : {{ rating }} sur 5",
+      "save_amount": "-{{ amount }}",
+      "shipping_policy": "Frais de livraison",
+      "sold_out": "Épuisé",
+      "taxes_excluded": "Hors taxes.",
+      "taxes_included": "TTC.",
+      "unavailable": "Indisponible"
+    }
+  },
+  "sections": {
+    "announcement": {
+      "label": "Annonces"
+    },
+    "cart": {
+      "title": "Panier",
+      "add": "Ajouter",
+      "checkout": "Passer commande",
+      "continue": "Continuer mes achats",
+      "empty": "Votre panier est vide",
+      "note": "Instructions spéciales",
+      "remove": "Retirer",
+      "subtotal": "Sous-total",
+      "taxes_note": "Taxes incluses. Frais de port calculés à l'étape suivante.",
+      "update": "Mettre à jour",
+      "free_shipping_remaining_html": "Plus que <strong>{{ amount }}</strong> pour la livraison gratuite",
+      "free_shipping_unlocked": "Bravo, la livraison est offerte !"
+    },
+    "collection": {
+      "all": "Toutes les collections",
+      "count": {
+        "one": "{{ count }} produit",
+        "other": "{{ count }} produits"
+      },
+      "empty": "Aucun produit dans cette collection.",
+      "sort": "Trier par"
+    },
+    "featured_collection": {
+      "view_all": "Tout voir"
+    },
+    "featured_product": {
+      "placeholder_title": "Nom de votre produit",
+      "placeholder_text": "Choisissez un produit dans les réglages de cette section."
+    },
+    "header": {
+      "menu": "Menu"
+    },
+    "testimonials": {
+      "verified": "Achat vérifié"
+    }
+  },
+  "templates": {
+    "404": {
+      "title": "Page introuvable",
+      "subtext": "La page que vous cherchez n'existe pas ou a été déplacée."
+    }
+  },
+  "date_formats": {
+    "delivery_date": "%d/%m"
+  }
+}

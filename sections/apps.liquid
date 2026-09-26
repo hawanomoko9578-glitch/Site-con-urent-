@@ -1,0 +1,13 @@
+<div class="page-width" style="padding-top:2rem;padding-bottom:2rem">
+  {%- for block in section.blocks -%}
+    {% render block %}
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Applications",
+  "blocks": [{ "type": "@app" }],
+  "presets": [{ "name": "Applications" }]
+}
+{% endschema %}

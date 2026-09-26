@@ -1,0 +1,10 @@
+{%- comment -%}
+  Styles communs d'une section : marges intérieures.
+  Utilisation : {% render 'section-style', section: section %}
+{%- endcomment -%}
+{%- style -%}
+  #shopify-section-{{ section.id }} > .section {
+    --pt: {{ section.settings.padding_top | default: 64 }}px;
+    --pb: {{ section.settings.padding_bottom | default: 64 }}px;
+  }
+{%- endstyle -%}

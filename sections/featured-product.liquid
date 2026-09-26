@@ -1,0 +1,1095 @@
+{% render 'section-style', section: section %}
+{%- liquid
+  assign product = section.settings.product
+  assign form_id = 'ProductForm-' | append: section.id
+-%}
+<section class="section section--{{ section.settings.color_scheme }}"{% if product != blank %} data-product-section{% endif %} id="{{ section.settings.anchor | default: section.id | handleize }}">
+  <div class="page-width">
+    {% render 'section-heading', section: section %}
+    <div class="product">
+      <div class="product__media-wrapper">
+        {%- if product != blank -%}
+          {% render 'product-gallery', product: product, section: section %}
+        {%- else -%}
+          <div class="media media--square">{{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+        {%- endif -%}
+      </div>
+      <div class="product__info">
+        {%- if product != blank -%}
+          {%- for block in section.blocks -%}
+            {% render 'product-block', block: block, product: product, section: section, form_id: form_id %}
+          {%- endfor -%}
+        {%- else -%}
+          <h2 class="h2">{{ 'sections.featured_product.placeholder_title' | t }}</h2>
+          <div class="price price--large"><span class="price__regular">{{ 4999 | money }}</span></div>
+          <p class="text-muted">{{ 'sections.featured_product.placeholder_text' | t }}</p>
+          <button class="button button--primary button--full button--large" disabled>{{ 'products.product.add_to_cart' | t }}</button>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+  {%- if product != blank -%}
+    <script type="application/json" data-product-json>{{ product | json }}</script>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Produit en vedette",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Produit" },
+    { "type": "text", "id": "anchor", "label": "Ancre (pour les liens #acheter)", "default": "acheter" },
+    {"type": "header", "content": "En-tête de section"},
+    {"type": "text", "id": "subheading", "label": "Sur-titre"},
+    {"type": "text", "id": "heading", "label": "Titre", "default": "Titre de la section"},
+    {"type": "richtext", "id": "description", "label": "Description"},
+    {"type": "select", "id": "heading_align", "label": "Alignement du titre", "options": [{"value": "center", "label": "Centré"}, {"value": "left", "label": "Gauche"}], "default": "center"},
+    { "type": "checkbox", "id": "show_thumbnails", "label": "Afficher les miniatures", "default": true },
+    {"type": "header", "content": "Style de la section"},
+    {"type": "select", "id": "color_scheme", "label": "Couleurs", "options": [{"value": "default", "label": "Fond principal"}, {"value": "alt", "label": "Fond secondaire"}, {"value": "dark", "label": "Fond couleur principale (sombre)"}], "default": "default"},
+    {"type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64},
+    {"type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64}
+  ],
+  "blocks": [
+  {
+    "type": "@app"
+  },
+  {
+    "type": "eyebrow",
+    "name": "Sur-titre",
+    "limit": 1,
+    "settings": [
+      {
+        "type": "text",
+        "id": "text",
+        "label": "Texte",
+        "default": "Best-seller"
+      }
+    ]
+  },
+  {
+    "type": "title",
+    "name": "Titre",
+    "limit": 1,
+    "settings": []
+  },
+  {
+    "type": "rating",
+    "name": "Note / avis",
+    "limit": 1,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Si une application d'avis remplit les métachamps reviews.rating et reviews.rating_count, ils sont utilisés automatiquement."
+      },
+      {
+        "type": "range",
+        "id": "rating",
+        "label": "Note par défaut",
+        "min": 1,
+        "max": 5,
+        "step": 0.1,
+        "default": 4.8
+      },
+      {
+        "type": "text",
+        "id": "text",
+        "label": "Texte par défaut",
+        "default": "4,8/5 · 2 400+ avis"
+      },
+      {
+        "type": "text",
+        "id": "count_suffix",
+        "label": "Suffixe du nombre d'avis",
+        "default": "avis"
+      },
+      {
+        "type": "url",
+        "id": "link",
+        "label": "Lien (ex. vers la section avis)"
+      }
+    ]
+  },
+  {
+    "type": "price",
+    "name": "Prix",
+    "limit": 1,
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_taxes",
+        "label": "Afficher la mention taxes / livraison",
+        "default": false
+      }
+    ]
+  },
+  {
+    "type": "text",
+    "name": "Texte",
+    "settings": [
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "Texte",
+        "default": "<p>Une phrase d'accroche qui résume le bénéfice principal du produit.</p>"
+      }
+    ]
+  },
+  {
+    "type": "description",
+    "name": "Description du produit",
+    "limit": 1,
+    "settings": []
+  },
+  {
+    "type": "benefits",
+    "name": "Liste d'avantages",
+    "settings": [
+      {
+        "type": "text",
+        "id": "benefit_1",
+        "label": "Avantage 1",
+        "default": "Encourage votre animal à boire plus"
+      },
+      {
+        "type": "text",
+        "id": "benefit_2",
+        "label": "Avantage 2",
+        "default": "Eau filtrée et oxygénée en continu"
+      },
+      {
+        "type": "text",
+        "id": "benefit_3",
+        "label": "Avantage 3",
+        "default": "Pompe ultra-silencieuse"
+      },
+      {
+        "type": "text",
+        "id": "benefit_4",
+        "label": "Avantage 4",
+        "default": "Se nettoie en 2 minutes"
+      },
+      {
+        "type": "text",
+        "id": "benefit_5",
+        "label": "Avantage 5"
+      },
+      {
+        "type": "text",
+        "id": "benefit_6",
+        "label": "Avantage 6"
+      }
+    ]
+  },
+  {
+    "type": "variant_picker",
+    "name": "Sélecteur de variantes",
+    "limit": 1,
+    "settings": [
+      {
+        "type": "select",
+        "id": "style",
+        "label": "Style",
+        "options": [
+          {
+            "value": "pills",
+            "label": "Boutons"
+          },
+          {
+            "value": "dropdown",
+            "label": "Liste déroulante"
+          }
+        ],
+        "default": "pills"
+      }
+    ]
+  },
+  {
+    "type": "bundles",
+    "name": "Offres par quantité",
+    "limit": 1,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Important : la remise affichée est visuelle. Créez la réduction correspondante dans Shopify (Réductions > Réduction automatique > Quantité) pour qu'elle s'applique au paiement."
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Titre",
+        "default": "Choisissez votre offre"
+      },
+      {
+        "type": "range",
+        "id": "default_option",
+        "label": "Offre sélectionnée par défaut",
+        "min": 1,
+        "max": 3,
+        "step": 1,
+        "default": 1
+      },
+      {
+        "type": "header",
+        "content": "Offre 1"
+      },
+      {
+        "type": "number",
+        "id": "qty_1",
+        "label": "Quantité",
+        "default": 1
+      },
+      {
+        "type": "text",
+        "id": "title_1",
+        "label": "Titre",
+        "default": "1 unité"
+      },
+      {
+        "type": "text",
+        "id": "subtitle_1",
+        "label": "Sous-titre",
+        "default": "Idéal pour un animal"
+      },
+      {
+        "type": "number",
+        "id": "discount_1",
+        "label": "Remise (%)",
+        "default": 0
+      },
+      {
+        "type": "text",
+        "id": "label_1",
+        "label": "Étiquette"
+      },
+      {
+        "type": "header",
+        "content": "Offre 2"
+      },
+      {
+        "type": "number",
+        "id": "qty_2",
+        "label": "Quantité",
+        "default": 2
+      },
+      {
+        "type": "text",
+        "id": "title_2",
+        "label": "Titre",
+        "default": "2 unités"
+      },
+      {
+        "type": "text",
+        "id": "subtitle_2",
+        "label": "Sous-titre",
+        "default": "Pour plusieurs pièces ou animaux"
+      },
+      {
+        "type": "number",
+        "id": "discount_2",
+        "label": "Remise (%)",
+        "default": 15
+      },
+      {
+        "type": "text",
+        "id": "label_2",
+        "label": "Étiquette",
+        "default": "Le plus populaire"
+      },
+      {
+        "type": "header",
+        "content": "Offre 3"
+      },
+      {
+        "type": "number",
+        "id": "qty_3",
+        "label": "Quantité",
+        "default": 3
+      },
+      {
+        "type": "text",
+        "id": "title_3",
+        "label": "Titre",
+        "default": "3 unités"
+      },
+      {
+        "type": "text",
+        "id": "subtitle_3",
+        "label": "Sous-titre",
+        "default": "Le meilleur prix"
+      },
+      {
+        "type": "number",
+        "id": "discount_3",
+        "label": "Remise (%)",
+        "default": 25
+      },
+      {
+        "type": "text",
+        "id": "label_3",
+        "label": "Étiquette",
+        "default": "Meilleure offre"
+      }
+    ]
+  },
+  {
+    "type": "stock",
+    "name": "Indicateur de stock",
+    "limit": 1,
+    "settings": [
+      {
+        "type": "text",
+        "id": "in_stock_text",
+        "label": "Texte en stock",
+        "default": "En stock, expédié sous 24 h"
+      },
+      {
+        "type": "range",
+        "id": "threshold",
+        "label": "Seuil de stock faible",
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "default": 10
+      },
+      {
+        "type": "text",
+        "id": "low_text",
+        "label": "Texte stock faible",
+        "default": "Plus que [quantite] en stock, faites vite !",
+        "info": "[quantite] est remplacé par le stock réel"
+      }
+    ]
+  },
+  {
+    "type": "delivery",
+    "name": "Estimation de livraison",
+    "limit": 1,
+    "settings": [
+      {
+        "type": "text",
+        "id": "text",
+        "label": "Texte",
+        "default": "Commandez aujourd'hui, recevez-le entre le"
+      },
+      {
+        "type": "range",
+        "id": "min_days",
+        "label": "Délai minimum (jours)",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "range",
+        "id": "max_days",
+        "label": "Délai maximum (jours)",
+        "min": 1,
+        "max": 45,
+        "step": 1,
+        "default": 7
+      }
+    ]
+  },
+  {
+    "type": "highlight",
+    "name": "Encadré",
+    "settings": [
+      {
+        "type": "select",
+        "id": "icon",
+        "label": "Icône",
+        "options": [
+          {
+            "value": "check",
+            "label": "Coche"
+          },
+          {
+            "value": "check-circle",
+            "label": "Coche ronde"
+          },
+          {
+            "value": "truck",
+            "label": "Camion / livraison"
+          },
+          {
+            "value": "shield",
+            "label": "Bouclier / sécurité"
+          },
+          {
+            "value": "refresh",
+            "label": "Retour / échange"
+          },
+          {
+            "value": "heart",
+            "label": "Cœur"
+          },
+          {
+            "value": "leaf",
+            "label": "Feuille / naturel"
+          },
+          {
+            "value": "droplet",
+            "label": "Goutte d'eau"
+          },
+          {
+            "value": "filter",
+            "label": "Filtre"
+          },
+          {
+            "value": "quiet",
+            "label": "Silencieux"
+          },
+          {
+            "value": "paw",
+            "label": "Patte"
+          },
+          {
+            "value": "clock",
+            "label": "Horloge"
+          },
+          {
+            "value": "gift",
+            "label": "Cadeau"
+          },
+          {
+            "value": "chat",
+            "label": "Bulle / support"
+          },
+          {
+            "value": "lock",
+            "label": "Cadenas / paiement"
+          },
+          {
+            "value": "star",
+            "label": "Étoile"
+          },
+          {
+            "value": "sparkle",
+            "label": "Étincelle"
+          },
+          {
+            "value": "award",
+            "label": "Médaille"
+          },
+          {
+            "value": "battery",
+            "label": "Batterie"
+          },
+          {
+            "value": "recycle",
+            "label": "Recyclage"
+          }
+        ],
+        "default": "gift"
+      },
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "Texte",
+        "default": "<p><strong>Offert :</strong> un filtre de rechange avec chaque fontaine.</p>"
+      }
+    ]
+  },
+  {
+    "type": "quantity",
+    "name": "Sélecteur de quantité",
+    "limit": 1,
+    "settings": []
+  },
+  {
+    "type": "buy_buttons",
+    "name": "Boutons d'achat",
+    "limit": 1,
+    "settings": [
+      {
+        "type": "text",
+        "id": "label",
+        "label": "Texte du bouton",
+        "default": "Ajouter au panier"
+      },
+      {
+        "type": "select",
+        "id": "style",
+        "label": "Style",
+        "options": [
+          {
+            "value": "primary",
+            "label": "Principal"
+          },
+          {
+            "value": "accent",
+            "label": "Accent"
+          }
+        ],
+        "default": "primary"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_dynamic_checkout",
+        "label": "Boutons de paiement express (Shop Pay, Apple Pay…)",
+        "default": true
+      }
+    ]
+  },
+  {
+    "type": "trust",
+    "name": "Ligne de réassurance",
+    "limit": 2,
+    "settings": [
+      {
+        "type": "select",
+        "id": "icon_1",
+        "label": "Icône 1",
+        "options": [
+          {
+            "value": "check",
+            "label": "Coche"
+          },
+          {
+            "value": "check-circle",
+            "label": "Coche ronde"
+          },
+          {
+            "value": "truck",
+            "label": "Camion / livraison"
+          },
+          {
+            "value": "shield",
+            "label": "Bouclier / sécurité"
+          },
+          {
+            "value": "refresh",
+            "label": "Retour / échange"
+          },
+          {
+            "value": "heart",
+            "label": "Cœur"
+          },
+          {
+            "value": "leaf",
+            "label": "Feuille / naturel"
+          },
+          {
+            "value": "droplet",
+            "label": "Goutte d'eau"
+          },
+          {
+            "value": "filter",
+            "label": "Filtre"
+          },
+          {
+            "value": "quiet",
+            "label": "Silencieux"
+          },
+          {
+            "value": "paw",
+            "label": "Patte"
+          },
+          {
+            "value": "clock",
+            "label": "Horloge"
+          },
+          {
+            "value": "gift",
+            "label": "Cadeau"
+          },
+          {
+            "value": "chat",
+            "label": "Bulle / support"
+          },
+          {
+            "value": "lock",
+            "label": "Cadenas / paiement"
+          },
+          {
+            "value": "star",
+            "label": "Étoile"
+          },
+          {
+            "value": "sparkle",
+            "label": "Étincelle"
+          },
+          {
+            "value": "award",
+            "label": "Médaille"
+          },
+          {
+            "value": "battery",
+            "label": "Batterie"
+          },
+          {
+            "value": "recycle",
+            "label": "Recyclage"
+          }
+        ],
+        "default": "truck"
+      },
+      {
+        "type": "text",
+        "id": "text_1",
+        "label": "Texte 1",
+        "default": "Livraison gratuite"
+      },
+      {
+        "type": "select",
+        "id": "icon_2",
+        "label": "Icône 2",
+        "options": [
+          {
+            "value": "check",
+            "label": "Coche"
+          },
+          {
+            "value": "check-circle",
+            "label": "Coche ronde"
+          },
+          {
+            "value": "truck",
+            "label": "Camion / livraison"
+          },
+          {
+            "value": "shield",
+            "label": "Bouclier / sécurité"
+          },
+          {
+            "value": "refresh",
+            "label": "Retour / échange"
+          },
+          {
+            "value": "heart",
+            "label": "Cœur"
+          },
+          {
+            "value": "leaf",
+            "label": "Feuille / naturel"
+          },
+          {
+            "value": "droplet",
+            "label": "Goutte d'eau"
+          },
+          {
+            "value": "filter",
+            "label": "Filtre"
+          },
+          {
+            "value": "quiet",
+            "label": "Silencieux"
+          },
+          {
+            "value": "paw",
+            "label": "Patte"
+          },
+          {
+            "value": "clock",
+            "label": "Horloge"
+          },
+          {
+            "value": "gift",
+            "label": "Cadeau"
+          },
+          {
+            "value": "chat",
+            "label": "Bulle / support"
+          },
+          {
+            "value": "lock",
+            "label": "Cadenas / paiement"
+          },
+          {
+            "value": "star",
+            "label": "Étoile"
+          },
+          {
+            "value": "sparkle",
+            "label": "Étincelle"
+          },
+          {
+            "value": "award",
+            "label": "Médaille"
+          },
+          {
+            "value": "battery",
+            "label": "Batterie"
+          },
+          {
+            "value": "recycle",
+            "label": "Recyclage"
+          }
+        ],
+        "default": "refresh"
+      },
+      {
+        "type": "text",
+        "id": "text_2",
+        "label": "Texte 2",
+        "default": "Satisfait ou remboursé"
+      },
+      {
+        "type": "select",
+        "id": "icon_3",
+        "label": "Icône 3",
+        "options": [
+          {
+            "value": "check",
+            "label": "Coche"
+          },
+          {
+            "value": "check-circle",
+            "label": "Coche ronde"
+          },
+          {
+            "value": "truck",
+            "label": "Camion / livraison"
+          },
+          {
+            "value": "shield",
+            "label": "Bouclier / sécurité"
+          },
+          {
+            "value": "refresh",
+            "label": "Retour / échange"
+          },
+          {
+            "value": "heart",
+            "label": "Cœur"
+          },
+          {
+            "value": "leaf",
+            "label": "Feuille / naturel"
+          },
+          {
+            "value": "droplet",
+            "label": "Goutte d'eau"
+          },
+          {
+            "value": "filter",
+            "label": "Filtre"
+          },
+          {
+            "value": "quiet",
+            "label": "Silencieux"
+          },
+          {
+            "value": "paw",
+            "label": "Patte"
+          },
+          {
+            "value": "clock",
+            "label": "Horloge"
+          },
+          {
+            "value": "gift",
+            "label": "Cadeau"
+          },
+          {
+            "value": "chat",
+            "label": "Bulle / support"
+          },
+          {
+            "value": "lock",
+            "label": "Cadenas / paiement"
+          },
+          {
+            "value": "star",
+            "label": "Étoile"
+          },
+          {
+            "value": "sparkle",
+            "label": "Étincelle"
+          },
+          {
+            "value": "award",
+            "label": "Médaille"
+          },
+          {
+            "value": "battery",
+            "label": "Batterie"
+          },
+          {
+            "value": "recycle",
+            "label": "Recyclage"
+          }
+        ],
+        "default": "lock"
+      },
+      {
+        "type": "text",
+        "id": "text_3",
+        "label": "Texte 3",
+        "default": "Paiement sécurisé"
+      },
+      {
+        "type": "select",
+        "id": "icon_4",
+        "label": "Icône 4",
+        "options": [
+          {
+            "value": "check",
+            "label": "Coche"
+          },
+          {
+            "value": "check-circle",
+            "label": "Coche ronde"
+          },
+          {
+            "value": "truck",
+            "label": "Camion / livraison"
+          },
+          {
+            "value": "shield",
+            "label": "Bouclier / sécurité"
+          },
+          {
+            "value": "refresh",
+            "label": "Retour / échange"
+          },
+          {
+            "value": "heart",
+            "label": "Cœur"
+          },
+          {
+            "value": "leaf",
+            "label": "Feuille / naturel"
+          },
+          {
+            "value": "droplet",
+            "label": "Goutte d'eau"
+          },
+          {
+            "value": "filter",
+            "label": "Filtre"
+          },
+          {
+            "value": "quiet",
+            "label": "Silencieux"
+          },
+          {
+            "value": "paw",
+            "label": "Patte"
+          },
+          {
+            "value": "clock",
+            "label": "Horloge"
+          },
+          {
+            "value": "gift",
+            "label": "Cadeau"
+          },
+          {
+            "value": "chat",
+            "label": "Bulle / support"
+          },
+          {
+            "value": "lock",
+            "label": "Cadenas / paiement"
+          },
+          {
+            "value": "star",
+            "label": "Étoile"
+          },
+          {
+            "value": "sparkle",
+            "label": "Étincelle"
+          },
+          {
+            "value": "award",
+            "label": "Médaille"
+          },
+          {
+            "value": "battery",
+            "label": "Batterie"
+          },
+          {
+            "value": "recycle",
+            "label": "Recyclage"
+          }
+        ],
+        "default": "chat"
+      },
+      {
+        "type": "text",
+        "id": "text_4",
+        "label": "Texte 4"
+      }
+    ]
+  },
+  {
+    "type": "payment",
+    "name": "Moyens de paiement",
+    "limit": 1,
+    "settings": [
+      {
+        "type": "text",
+        "id": "text",
+        "label": "Texte",
+        "default": "Paiement 100 % sécurisé"
+      }
+    ]
+  },
+  {
+    "type": "image",
+    "name": "Image",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      }
+    ]
+  },
+  {
+    "type": "collapsible_tab",
+    "name": "Onglet dépliable",
+    "settings": [
+      {
+        "type": "select",
+        "id": "icon",
+        "label": "Icône",
+        "options": [
+          {
+            "value": "none",
+            "label": "Aucune"
+          },
+          {
+            "value": "check",
+            "label": "Coche"
+          },
+          {
+            "value": "check-circle",
+            "label": "Coche ronde"
+          },
+          {
+            "value": "truck",
+            "label": "Camion / livraison"
+          },
+          {
+            "value": "shield",
+            "label": "Bouclier / sécurité"
+          },
+          {
+            "value": "refresh",
+            "label": "Retour / échange"
+          },
+          {
+            "value": "heart",
+            "label": "Cœur"
+          },
+          {
+            "value": "leaf",
+            "label": "Feuille / naturel"
+          },
+          {
+            "value": "droplet",
+            "label": "Goutte d'eau"
+          },
+          {
+            "value": "filter",
+            "label": "Filtre"
+          },
+          {
+            "value": "quiet",
+            "label": "Silencieux"
+          },
+          {
+            "value": "paw",
+            "label": "Patte"
+          },
+          {
+            "value": "clock",
+            "label": "Horloge"
+          },
+          {
+            "value": "gift",
+            "label": "Cadeau"
+          },
+          {
+            "value": "chat",
+            "label": "Bulle / support"
+          },
+          {
+            "value": "lock",
+            "label": "Cadenas / paiement"
+          },
+          {
+            "value": "star",
+            "label": "Étoile"
+          },
+          {
+            "value": "sparkle",
+            "label": "Étincelle"
+          },
+          {
+            "value": "award",
+            "label": "Médaille"
+          },
+          {
+            "value": "battery",
+            "label": "Batterie"
+          },
+          {
+            "value": "recycle",
+            "label": "Recyclage"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Titre",
+        "default": "Caractéristiques"
+      },
+      {
+        "type": "select",
+        "id": "source",
+        "label": "Contenu",
+        "options": [
+          {
+            "value": "custom",
+            "label": "Texte personnalisé"
+          },
+          {
+            "value": "description",
+            "label": "Description du produit"
+          }
+        ],
+        "default": "custom"
+      },
+      {
+        "type": "richtext",
+        "id": "content",
+        "label": "Texte",
+        "default": "<p>Matériaux, dimensions, capacité, contenu du colis…</p>"
+      },
+      {
+        "type": "page",
+        "id": "page",
+        "label": "Ou contenu d'une page"
+      },
+      {
+        "type": "checkbox",
+        "id": "open",
+        "label": "Ouvert par défaut",
+        "default": false
+      }
+    ]
+  },
+  {
+    "type": "custom_liquid",
+    "name": "Code personnalisé",
+    "settings": [
+      {
+        "type": "liquid",
+        "id": "custom_liquid",
+        "label": "Code Liquid / HTML"
+      }
+    ]
+  }
+],
+  "presets": [{ "name": "Produit en vedette", "blocks": [
+    { "type": "rating" }, { "type": "title" }, { "type": "price" }, { "type": "benefits" },
+    { "type": "variant_picker" }, { "type": "buy_buttons" }, { "type": "trust" }
+  ]}]
+}
+{% endschema %}

@@ -1,0 +1,16 @@
+{%- comment -%}
+  Titre de section standard. Paramètres : section (objet section), align (optionnel)
+{%- endcomment -%}
+{%- if section.settings.subheading != blank or section.settings.heading != blank or section.settings.description != blank -%}
+  <div class="section-heading section-heading--{{ section.settings.heading_align | default: 'center' }} reveal">
+    {%- if section.settings.subheading != blank -%}
+      <p class="eyebrow">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <h2 class="h2">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.description != blank -%}
+      <div class="section-heading__text rte">{{ section.settings.description }}</div>
+    {%- endif -%}
+  </div>
+{%- endif -%}

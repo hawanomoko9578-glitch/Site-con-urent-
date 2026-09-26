@@ -1,0 +1,17 @@
+{%- comment -%} Paramètres : media, eager (bool) {%- endcomment -%}
+{%- case media.media_type -%}
+  {%- when 'image' -%}
+    {%- if eager -%}
+      {{ media | image_url: width: 1500 | image_tag: sizes: '(min-width: 990px) 55vw, 100vw', widths: '550, 750, 1100, 1500', loading: 'eager', fetchpriority: 'high', alt: media.alt | escape }}
+    {%- else -%}
+      {{ media | image_url: width: 1500 | image_tag: sizes: '(min-width: 990px) 55vw, 100vw', widths: '550, 750, 1100, 1500', loading: 'lazy', alt: media.alt | escape }}
+    {%- endif -%}
+  {%- when 'video' -%}
+    {{ media | video_tag: controls: true, playsinline: true, muted: true, loop: true, image_size: '1100x' }}
+  {%- when 'external_video' -%}
+    {{ media | external_video_tag }}
+  {%- when 'model' -%}
+    {{ media | model_viewer_tag }}
+  {%- else -%}
+    {{ media | media_tag }}
+{%- endcase -%}

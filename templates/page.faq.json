@@ -1,0 +1,65 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "padding_bottom": 0
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "À quelle fréquence changer le filtre ?",
+            "answer": "<p>Nous recommandons de remplacer le filtre toutes les 2 à 4 semaines selon le nombre d'animaux.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "La fontaine est-elle bruyante ?",
+            "answer": "<p>Non. La pompe est conçue pour être quasiment silencieuse, même dans une chambre.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Comment la nettoyer ?",
+            "answer": "<p>Démontez-la en quelques secondes : les pièces en acier passent au lave-vaisselle. La pompe se rince simplement à l'eau.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Quels sont les délais de livraison ?",
+            "answer": "<p>Les commandes sont expédiées sous 24 à 48 h. Comptez ensuite 3 à 7 jours ouvrés selon votre pays.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Et si mon animal ne l'aime pas ?",
+            "answer": "<p>Vous bénéficiez de notre garantie satisfait ou remboursé : contactez-nous et nous nous occupons de tout.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
+      "settings": {
+        "subheading": "FAQ",
+        "heading": "Questions fréquentes"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "faq"
+  ]
+}

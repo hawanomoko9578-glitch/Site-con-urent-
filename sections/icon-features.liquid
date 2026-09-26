@@ -1,0 +1,57 @@
+{% render 'section-style', section: section %}
+<section class="section section--{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    {% render 'section-heading', section: section %}
+    <div class="icon-grid{% if section.settings.compact %} icon-grid--compact{% endif %}" style="--cols: {{ section.settings.columns }}; --cols-mobile: {{ section.settings.columns_mobile }};">
+      {%- for block in section.blocks -%}
+        <div class="icon-item reveal" {{ block.shopify_attributes }}>
+          <div class="icon-item__icon">
+            {%- if block.settings.image != blank -%}
+              {{ block.settings.image | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}
+            {%- else -%}
+              {% render 'icon', name: block.settings.icon %}
+            {%- endif -%}
+          </div>
+          <div>
+            {%- if block.settings.title != blank -%}<h3>{{ block.settings.title }}</h3>{%- endif -%}
+            {%- if block.settings.text != blank -%}<div class="icon-item__text rte">{{ block.settings.text }}</div>{%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Icônes / réassurance",
+  "settings": [
+    {"type": "header", "content": "En-tête de section"},
+    {"type": "text", "id": "subheading", "label": "Sur-titre"},
+    {"type": "text", "id": "heading", "label": "Titre", "default": "Titre de la section"},
+    {"type": "richtext", "id": "description", "label": "Description"},
+    {"type": "select", "id": "heading_align", "label": "Alignement du titre", "options": [{"value": "center", "label": "Centré"}, {"value": "left", "label": "Gauche"}], "default": "center"},
+    { "type": "range", "id": "columns", "label": "Colonnes (ordinateur)", "min": 2, "max": 6, "step": 1, "default": 4 },
+    { "type": "range", "id": "columns_mobile", "label": "Colonnes (mobile)", "min": 1, "max": 2, "step": 1, "default": 2 },
+    { "type": "checkbox", "id": "compact", "label": "Style compact (icône à gauche)", "default": false },
+    {"type": "header", "content": "Style de la section"},
+    {"type": "select", "id": "color_scheme", "label": "Couleurs", "options": [{"value": "default", "label": "Fond principal"}, {"value": "alt", "label": "Fond secondaire"}, {"value": "dark", "label": "Fond couleur principale (sombre)"}], "default": "default"},
+    {"type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64},
+    {"type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64}
+  ],
+  "blocks": [
+    { "type": "item", "name": "Élément", "settings": [
+      {"type": "select", "id": "icon", "label": "Icône", "options": [{"value": "check", "label": "Coche"}, {"value": "check-circle", "label": "Coche ronde"}, {"value": "truck", "label": "Camion / livraison"}, {"value": "shield", "label": "Bouclier / sécurité"}, {"value": "refresh", "label": "Retour / échange"}, {"value": "heart", "label": "Cœur"}, {"value": "leaf", "label": "Feuille / naturel"}, {"value": "droplet", "label": "Goutte d'eau"}, {"value": "filter", "label": "Filtre"}, {"value": "quiet", "label": "Silencieux"}, {"value": "paw", "label": "Patte"}, {"value": "clock", "label": "Horloge"}, {"value": "gift", "label": "Cadeau"}, {"value": "chat", "label": "Bulle / support"}, {"value": "lock", "label": "Cadenas / paiement"}, {"value": "star", "label": "Étoile"}, {"value": "sparkle", "label": "Étincelle"}, {"value": "award", "label": "Médaille"}, {"value": "battery", "label": "Batterie"}, {"value": "recycle", "label": "Recyclage"}], "default": "check-circle"},
+      { "type": "image_picker", "id": "image", "label": "Image personnalisée (remplace l'icône)" },
+      { "type": "text", "id": "title", "label": "Titre", "default": "Avantage" },
+      { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Décrivez cet avantage en une phrase.</p>" }
+    ]}
+  ],
+  "presets": [{ "name": "Icônes / réassurance", "blocks": [
+    { "type": "item", "settings": { "icon": "truck", "title": "Livraison offerte", "text": "<p>Expédition rapide et suivie, sans frais.</p>" } },
+    { "type": "item", "settings": { "icon": "refresh", "title": "Satisfait ou remboursé", "text": "<p>Essayez sans risque pendant 365 jours.</p>" } },
+    { "type": "item", "settings": { "icon": "award", "title": "Approuvé par des vétos", "text": "<p>Conçu avec des professionnels de santé animale.</p>" } },
+    { "type": "item", "settings": { "icon": "chat", "title": "Support réactif", "text": "<p>Une vraie réponse en moins de 24 h.</p>" } }
+  ]}]
+}
+{% endschema %}

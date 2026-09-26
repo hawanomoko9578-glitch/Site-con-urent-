@@ -1,0 +1,48 @@
+{%- comment -%}
+  Carte produit. Paramètres : product (objet), index (optionnel), show_quick_add (bool)
+{%- endcomment -%}
+{%- liquid
+  assign rating = product.metafields.reviews.rating.value.rating | default: settings.card_rating_value
+  assign rating_count = product.metafields.reviews.rating_count | default: settings.card_rating_count
+-%}
+<div class="product-card reveal">
+  <a href="{{ product.url | default: '#' }}" class="product-card__media">
+    {%- if product.featured_media -%}
+      {{ product.featured_media | image_url: width: 800 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 25vw, 50vw', widths: '300, 400, 600, 800', class: 'product-card__img', alt: product.featured_media.alt | escape }}
+      {%- if settings.card_show_secondary_image and product.media[1] -%}
+        {{ product.media[1] | image_url: width: 800 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 25vw, 50vw', widths: '300, 400, 600, 800', class: 'product-card__img product-card__img--hover', alt: '' }}
+      {%- endif -%}
+    {%- else -%}
+      {%- assign placeholder_index = index | default: 1 | modulo: 6 | plus: 1 -%}
+      {{ 'product-' | append: placeholder_index | placeholder_svg_tag: 'placeholder-svg product-card__img' }}
+    {%- endif -%}
+    {%- if product.compare_at_price > product.price and settings.show_sale_badge -%}
+      <span class="badge badge--sale product-card__badge">{{ 'products.product.on_sale' | t }}</span>
+    {%- elsif product.available == false and product.id -%}
+      <span class="badge product-card__badge">{{ 'products.product.sold_out' | t }}</span>
+    {%- endif -%}
+  </a>
+  <div class="product-card__info">
+    {%- if settings.card_show_rating -%}
+      {% render 'stars', rating: rating, count: rating_count, size: 14 %}
+    {%- endif -%}
+    <h3 class="product-card__title">
+      <a href="{{ product.url | default: '#' }}">{{ product.title | default: 'Nom du produit' }}</a>
+    </h3>
+    {%- if product.id -%}
+      {% render 'price', product: product, show_badge: false %}
+    {%- else -%}
+      <div class="price"><span class="price__regular">{{ 4999 | money }}</span></div>
+    {%- endif -%}
+    {%- if show_quick_add and product.id and product.available -%}
+      {%- if product.has_only_default_variant -%}
+        <form action="{{ routes.cart_add_url }}" method="post" class="product-card__form" data-product-form>
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          <button type="submit" class="button button--primary button--small button--full">{{ 'products.product.add_to_cart' | t }}</button>
+        </form>
+      {%- else -%}
+        <a href="{{ product.url }}" class="button button--secondary button--small button--full">{{ 'products.product.choose_options' | t }}</a>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>

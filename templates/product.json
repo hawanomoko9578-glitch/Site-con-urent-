@@ -1,0 +1,440 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "rating": {
+          "type": "rating",
+          "settings": {
+            "link": "#avis"
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {
+            "show_taxes": true
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {}
+        },
+        "benefits": {
+          "type": "benefits",
+          "settings": {}
+        },
+        "variants": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "bundles": {
+          "type": "bundles",
+          "settings": {}
+        },
+        "stock": {
+          "type": "stock",
+          "settings": {}
+        },
+        "buy": {
+          "type": "buy_buttons",
+          "settings": {}
+        },
+        "trust": {
+          "type": "trust",
+          "settings": {}
+        },
+        "delivery": {
+          "type": "delivery",
+          "settings": {}
+        },
+        "gift": {
+          "type": "highlight",
+          "settings": {}
+        },
+        "tab1": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Description",
+            "source": "description",
+            "icon": "sparkle",
+            "open": true
+          }
+        },
+        "tab2": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Caractéristiques techniques",
+            "icon": "filter"
+          }
+        },
+        "tab3": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Livraison et retours",
+            "icon": "truck",
+            "content": "<p>Livraison offerte, expédiée sous 24 à 48 h. Retours acceptés sous 365 jours.</p>"
+          }
+        },
+        "payment": {
+          "type": "payment",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "rating",
+        "title",
+        "price",
+        "text",
+        "benefits",
+        "variants",
+        "bundles",
+        "stock",
+        "buy",
+        "trust",
+        "delivery",
+        "gift",
+        "tab1",
+        "tab2",
+        "tab3",
+        "payment"
+      ],
+      "settings": {}
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "m1": {
+          "type": "item",
+          "settings": {
+            "text": "Livraison gratuite",
+            "icon": "truck"
+          }
+        },
+        "m2": {
+          "type": "item",
+          "settings": {
+            "text": "Satisfait ou remboursé",
+            "icon": "refresh"
+          }
+        },
+        "m3": {
+          "type": "item",
+          "settings": {
+            "text": "Approuvé par des vétérinaires",
+            "icon": "award"
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2",
+        "m3"
+      ],
+      "settings": {}
+    },
+    "features": {
+      "type": "feature-split",
+      "blocks": {
+        "f1": {
+          "type": "feature",
+          "settings": {
+            "icon": "filter",
+            "title": "Filtration en 3 couches",
+            "text": "Retient poils, poussières et impuretés pour une eau toujours propre."
+          }
+        },
+        "f2": {
+          "type": "feature",
+          "settings": {
+            "icon": "quiet",
+            "title": "Ultra-silencieuse",
+            "text": "Une pompe presque inaudible, même la nuit."
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "icon": "shield",
+            "title": "Acier inoxydable",
+            "text": "Hygiénique, sans BPA et résistant aux bactéries."
+          }
+        },
+        "f4": {
+          "type": "feature",
+          "settings": {
+            "icon": "droplet",
+            "title": "Grande capacité",
+            "text": "Plusieurs jours d'autonomie entre deux remplissages."
+          }
+        },
+        "f5": {
+          "type": "feature",
+          "settings": {
+            "icon": "refresh",
+            "title": "Facile à nettoyer",
+            "text": "Se démonte en quelques secondes, passe au lave-vaisselle."
+          }
+        },
+        "f6": {
+          "type": "feature",
+          "settings": {
+            "icon": "battery",
+            "title": "Sans fil",
+            "text": "Batterie longue durée : placez-la où vous voulez."
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6"
+      ],
+      "settings": {
+        "subheading": "Conçue dans les moindres détails",
+        "heading": "Tout ce dont votre animal a besoin"
+      }
+    },
+    "problem": {
+      "type": "image-with-text",
+      "blocks": {
+        "e": {
+          "type": "eyebrow",
+          "settings": {}
+        },
+        "h": {
+          "type": "heading",
+          "settings": {}
+        },
+        "t": {
+          "type": "text",
+          "settings": {}
+        },
+        "c1": {
+          "type": "check",
+          "settings": {
+            "title": "Soutient les reins et la digestion"
+          }
+        },
+        "c2": {
+          "type": "check",
+          "settings": {
+            "title": "Pelage plus brillant, plus d'énergie"
+          }
+        },
+        "c3": {
+          "type": "check",
+          "settings": {
+            "title": "Moins de visites chez le vétérinaire"
+          }
+        },
+        "b": {
+          "type": "button",
+          "settings": {
+            "label": "Je veux la fontaine",
+            "link": "#acheter",
+            "style": "accent"
+          }
+        }
+      },
+      "block_order": [
+        "e",
+        "h",
+        "t",
+        "c1",
+        "c2",
+        "c3",
+        "b"
+      ],
+      "settings": {
+        "color_scheme": "alt",
+        "layout": "right"
+      }
+    },
+    "comparison": {
+      "type": "comparison",
+      "blocks": {
+        "r1": {
+          "type": "row",
+          "settings": {
+            "feature": "Eau filtrée en continu"
+          }
+        },
+        "r2": {
+          "type": "row",
+          "settings": {
+            "feature": "Encourage à boire plus"
+          }
+        },
+        "r3": {
+          "type": "row",
+          "settings": {
+            "feature": "Eau oxygénée et fraîche"
+          }
+        },
+        "r4": {
+          "type": "row",
+          "settings": {
+            "feature": "Limite les bactéries"
+          }
+        },
+        "r5": {
+          "type": "row",
+          "settings": {
+            "feature": "Facile à nettoyer",
+            "them": true
+          }
+        },
+        "r6": {
+          "type": "row",
+          "settings": {
+            "feature": "Garantie satisfait ou remboursé"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5",
+        "r6"
+      ],
+      "settings": {
+        "subheading": "Comparez",
+        "heading": "Pourquoi changer de gamelle ?",
+        "button_label": "",
+        "button_link": "#acheter",
+        "color_scheme": "default"
+      }
+    },
+    "reviews": {
+      "type": "testimonials",
+      "blocks": {
+        "r1": {
+          "type": "review",
+          "settings": {
+            "title": "Enfin, il boit !",
+            "text": "<p>Remplacez ce texte par un véritable avis client. Les avis authentiques rassurent vos visiteurs.</p>",
+            "author": "Camille R."
+          }
+        },
+        "r2": {
+          "type": "review",
+          "settings": {
+            "title": "Silencieuse et élégante",
+            "text": "<p>Remplacez ce texte par un véritable avis client. Mentionnez un bénéfice précis.</p>",
+            "author": "Julien M."
+          }
+        },
+        "r3": {
+          "type": "review",
+          "settings": {
+            "title": "Facile à nettoyer",
+            "text": "<p>Remplacez ce texte par un véritable avis client. Ajoutez une photo pour plus d'impact.</p>",
+            "author": "Sophie L."
+          }
+        },
+        "r4": {
+          "type": "review",
+          "settings": {
+            "title": "Top pour 2 chiens",
+            "text": "<p>Remplacez ce texte par un véritable avis client.</p>",
+            "author": "Marc D."
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4"
+      ],
+      "settings": {
+        "subheading": "Avis clients",
+        "heading": "Ils ne reviendraient pas en arrière",
+        "color_scheme": "alt"
+      }
+    },
+    "guarantee": {
+      "type": "guarantee",
+      "settings": {
+        "button_label": "",
+        "color_scheme": "default"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "À quelle fréquence changer le filtre ?",
+            "answer": "<p>Nous recommandons de remplacer le filtre toutes les 2 à 4 semaines selon le nombre d'animaux.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "La fontaine est-elle bruyante ?",
+            "answer": "<p>Non. La pompe est conçue pour être quasiment silencieuse, même dans une chambre.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Comment la nettoyer ?",
+            "answer": "<p>Démontez-la en quelques secondes : les pièces en acier passent au lave-vaisselle. La pompe se rince simplement à l'eau.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Quels sont les délais de livraison ?",
+            "answer": "<p>Les commandes sont expédiées sous 24 à 48 h. Comptez ensuite 3 à 7 jours ouvrés selon votre pays.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Et si mon animal ne l'aime pas ?",
+            "answer": "<p>Vous bénéficiez de notre garantie satisfait ou remboursé : contactez-nous et nous nous occupons de tout.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
+      "settings": {
+        "subheading": "FAQ",
+        "heading": "Questions fréquentes",
+        "color_scheme": "alt"
+      }
+    },
+    "apps": {
+      "type": "apps",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "marquee",
+    "features",
+    "problem",
+    "comparison",
+    "reviews",
+    "guarantee",
+    "faq",
+    "apps"
+  ]
+}

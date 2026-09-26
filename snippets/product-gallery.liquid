@@ -1,0 +1,56 @@
+{%- comment -%}
+  Galerie produit. Paramètres : product, section
+{%- endcomment -%}
+{%- liquid
+  assign featured = product.selected_or_first_available_variant.featured_media | default: product.featured_media
+-%}
+<div class="product-gallery" data-gallery>
+  <div class="product-gallery__main">
+    <div class="product-gallery__slides">
+      {%- if product.media.size > 0 -%}
+        {%- if featured -%}
+          <div class="product-gallery__slide" data-media-id="{{ featured.id }}">
+            {%- render 'product-media', media: featured, eager: true -%}
+          </div>
+        {%- endif -%}
+        {%- for media in product.media -%}
+          {%- unless featured and media.id == featured.id -%}
+            <div class="product-gallery__slide" data-media-id="{{ media.id }}">
+              {%- render 'product-media', media: media, eager: false -%}
+            </div>
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- else -%}
+        <div class="product-gallery__slide" data-media-id="placeholder">
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {%- endif -%}
+    </div>
+    {%- if product.media.size > 1 -%}
+      <div class="product-gallery__arrows">
+        <button type="button" class="slider__btn slider__btn--prev" data-gallery-prev aria-label="{{ 'general.previous' | t }}">{% render 'icon', name: 'arrow-right', size: 20 %}</button>
+        <button type="button" class="slider__btn" data-gallery-next aria-label="{{ 'general.next' | t }}">{% render 'icon', name: 'arrow-right', size: 20 %}</button>
+      </div>
+    {%- endif -%}
+  </div>
+  {%- if product.media.size > 1 and section.settings.show_thumbnails -%}
+    <ul class="product-gallery__thumbs" role="list">
+      {%- if featured -%}
+        <li>
+          <button type="button" class="product-gallery__thumb" data-thumb="{{ featured.id }}" aria-current="true" aria-label="{{ 'products.product.media_label' | t: index: 1 }}">
+            {{ featured.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+          </button>
+        </li>
+      {%- endif -%}
+      {%- for media in product.media -%}
+        {%- unless featured and media.id == featured.id -%}
+          <li>
+            <button type="button" class="product-gallery__thumb" data-thumb="{{ media.id }}" aria-current="false" aria-label="{{ 'products.product.media_label' | t: index: forloop.index }}">
+              {{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+            </button>
+          </li>
+        {%- endunless -%}
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+</div>

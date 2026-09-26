@@ -1,0 +1,44 @@
+{% render 'section-style', section: section %}
+<section class="section section--{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    <div class="guarantee reveal">
+      {%- if section.settings.image != blank -%}
+        <div class="guarantee__image">{{ section.settings.image | image_url: width: 400 | image_tag: loading: 'lazy', alt: section.settings.image.alt | escape }}</div>
+      {%- else -%}
+        <div class="guarantee__badge" aria-hidden="true">
+          <span class="guarantee__badge-big">{{ section.settings.badge_big }}</span>
+          <span class="guarantee__badge-small">{{ section.settings.badge_small }}</span>
+        </div>
+      {%- endif -%}
+      <div class="guarantee__content">
+        {%- if section.settings.subheading != blank -%}<p class="eyebrow">{{ section.settings.subheading }}</p>{%- endif -%}
+        <h2 class="h2">{{ section.settings.heading }}</h2>
+        <div class="rte">{{ section.settings.text }}</div>
+        {%- if section.settings.button_label != blank -%}
+          <p style="margin-top:2rem"><a href="{{ section.settings.button_link | default: '#' }}" class="button button--primary">{{ section.settings.button_label }}</a></p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Garantie",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image du badge (remplace le badge automatique)" },
+    { "type": "text", "id": "badge_big", "label": "Badge : grand texte", "default": "365" },
+    { "type": "text", "id": "badge_small", "label": "Badge : petit texte", "default": "jours pour essayer" },
+    { "type": "text", "id": "subheading", "label": "Sur-titre", "default": "Zéro risque" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Essayez-la pendant un an, sans risque" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Si votre compagnon ne l'adopte pas, écrivez-nous : nous vous remboursons intégralement. Aucune question, aucune complication.</p>" },
+    { "type": "text", "id": "button_label", "label": "Texte du bouton", "default": "J'en profite" },
+    { "type": "url", "id": "button_link", "label": "Lien du bouton" },
+    {"type": "header", "content": "Style de la section"},
+    {"type": "select", "id": "color_scheme", "label": "Couleurs", "options": [{"value": "default", "label": "Fond principal"}, {"value": "alt", "label": "Fond secondaire"}, {"value": "dark", "label": "Fond couleur principale (sombre)"}], "default": "default"},
+    {"type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64},
+    {"type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64}
+  ],
+  "presets": [{ "name": "Garantie" }]
+}
+{% endschema %}

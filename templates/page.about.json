@@ -1,0 +1,141 @@
+{
+  "sections": {
+    "rich": {
+      "type": "rich-text",
+      "blocks": {
+        "e": {
+          "type": "eyebrow",
+          "settings": {}
+        },
+        "h": {
+          "type": "heading",
+          "settings": {
+            "size": "1"
+          }
+        },
+        "t": {
+          "type": "text",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "e",
+        "h",
+        "t"
+      ],
+      "settings": {}
+    },
+    "iwt": {
+      "type": "image-with-text",
+      "blocks": {
+        "h": {
+          "type": "heading",
+          "settings": {
+            "heading": "Notre mission"
+          }
+        },
+        "t": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Expliquez ici pourquoi vous avez créé la marque et ce qui vous guide au quotidien.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "h",
+        "t"
+      ],
+      "settings": {
+        "color_scheme": "alt"
+      }
+    },
+    "stats": {
+      "type": "stats",
+      "blocks": {
+        "s1": {
+          "type": "stat",
+          "settings": {
+            "value": "93 %",
+            "label": "voient leur animal boire davantage dès la première semaine*"
+          }
+        },
+        "s2": {
+          "type": "stat",
+          "settings": {
+            "value": "89 %",
+            "label": "trouvent l'eau plus propre qu'avec une gamelle*"
+          }
+        },
+        "s3": {
+          "type": "stat",
+          "settings": {
+            "value": "96 %",
+            "label": "la recommanderaient à un proche*"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "settings": {
+        "heading": "Des résultats visibles",
+        "color_scheme": "dark"
+      }
+    },
+    "reviews": {
+      "type": "testimonials",
+      "blocks": {
+        "r1": {
+          "type": "review",
+          "settings": {
+            "title": "Enfin, il boit !",
+            "text": "<p>Remplacez ce texte par un véritable avis client. Les avis authentiques rassurent vos visiteurs.</p>",
+            "author": "Camille R."
+          }
+        },
+        "r2": {
+          "type": "review",
+          "settings": {
+            "title": "Silencieuse et élégante",
+            "text": "<p>Remplacez ce texte par un véritable avis client. Mentionnez un bénéfice précis.</p>",
+            "author": "Julien M."
+          }
+        },
+        "r3": {
+          "type": "review",
+          "settings": {
+            "title": "Facile à nettoyer",
+            "text": "<p>Remplacez ce texte par un véritable avis client. Ajoutez une photo pour plus d'impact.</p>",
+            "author": "Sophie L."
+          }
+        },
+        "r4": {
+          "type": "review",
+          "settings": {
+            "title": "Top pour 2 chiens",
+            "text": "<p>Remplacez ce texte par un véritable avis client.</p>",
+            "author": "Marc D."
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4"
+      ],
+      "settings": {
+        "subheading": "Avis clients",
+        "heading": "Ils ne reviendraient pas en arrière"
+      }
+    }
+  },
+  "order": [
+    "rich",
+    "iwt",
+    "stats",
+    "reviews"
+  ]
+}

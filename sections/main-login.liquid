@@ -1,0 +1,38 @@
+<section class="section">
+  <div class="page-width customer">
+    <div id="Login">
+      <h1 class="h2">{{ 'customer.login.title' | t }}</h1>
+      {%- form 'customer_login', novalidate: 'novalidate' -%}
+        {%- if form.errors -%}<div class="form-message form-message--error">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <div class="field"><label for="CustomerEmail">{{ 'contact.email' | t }}</label><input type="email" name="customer[email]" id="CustomerEmail" autocomplete="email" required></div>
+        {%- if form.password_needed -%}
+          <div class="field"><label for="CustomerPassword">{{ 'password.password' | t }}</label><input type="password" name="customer[password]" id="CustomerPassword" autocomplete="current-password" required></div>
+        {%- endif -%}
+        <button type="submit" class="button button--primary button--full">{{ 'customer.login.submit' | t }}</button>
+        <div class="customer__links">
+          <a href="#Recover" onclick="document.getElementById('Recover').hidden=false;document.getElementById('Login').hidden=true;return false;">{{ 'customer.login.forgot' | t }}</a>
+          <a href="{{ routes.account_register_url }}">{{ 'customer.register.title' | t }}</a>
+        </div>
+      {%- endform -%}
+    </div>
+    <div id="Recover" hidden>
+      <h2 class="h2">{{ 'customer.recover.title' | t }}</h2>
+      {%- form 'recover_customer_password' -%}
+        {%- if form.posted_successfully? -%}<p class="form-message form-message--success">{{ 'customer.recover.success' | t }}</p>{%- endif -%}
+        {%- if form.errors -%}<div class="form-message form-message--error">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <div class="field"><label for="RecoverEmail">{{ 'contact.email' | t }}</label><input type="email" name="email" id="RecoverEmail" autocomplete="email" required></div>
+        <button type="submit" class="button button--primary button--full">{{ 'customer.recover.submit' | t }}</button>
+        <div class="customer__links"><a href="#Login" onclick="document.getElementById('Recover').hidden=true;document.getElementById('Login').hidden=false;return false;">{{ 'general.cancel' | t }}</a></div>
+      {%- endform -%}
+    </div>
+    {%- if shop.checkout.guest_login -%}
+      <hr style="margin:3.2rem 0;border:0;border-top:1px solid var(--color-border)">
+      {%- form 'guest_login' -%}
+        <button type="submit" class="button button--secondary button--full">{{ 'customer.login.guest' | t }}</button>
+      {%- endform -%}
+    {%- endif -%}
+  </div>
+</section>
+{% schema %}
+{ "name": "Connexion", "settings": [] }
+{% endschema %}

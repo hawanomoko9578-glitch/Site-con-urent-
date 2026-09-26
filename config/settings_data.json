@@ -1,0 +1,13 @@
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "color_background": "#FFFFFF",
+      "color_background_alt": "#F4F1EA",
+      "color_text": "#1D2B36",
+      "color_primary": "#1F4E5F",
+      "color_accent": "#E8A33D",
+      "cart_type": "drawer"
+    }
+  }
+}

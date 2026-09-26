@@ -1,0 +1,22 @@
+{%- comment -%}
+  Affiche des étoiles de notation.
+  Paramètres : rating (nombre, ex. 4.8), count (texte optionnel), size (px)
+{%- endcomment -%}
+{%- liquid
+  assign rating_value = rating | default: 5 | plus: 0
+  assign percent = rating_value | divided_by: 5.0 | times: 100
+  assign size = size | default: 16
+-%}
+<div class="stars" aria-label="{{ 'products.product.rating_label' | t: rating: rating_value }}">
+  <span class="stars__icons" style="--stars-percent: {{ percent }}%;">
+    <span class="stars__empty">
+      {%- for i in (1..5) -%}{% render 'icon', name: 'star', size: size %}{%- endfor -%}
+    </span>
+    <span class="stars__full">
+      {%- for i in (1..5) -%}{% render 'icon', name: 'star', size: size %}{%- endfor -%}
+    </span>
+  </span>
+  {%- if count != blank -%}
+    <span class="stars__count">{{ count }}</span>
+  {%- endif -%}
+</div>
