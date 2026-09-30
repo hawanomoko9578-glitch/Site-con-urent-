@@ -1,0 +1,639 @@
+{%- comment -%}
+  Section : Sticky Product Offer
+  - Galerie produit sticky (reste visible pendant le scroll des infos)
+  - Barre d'achat sticky en bas de l'écran quand le bouton principal sort de l'écran
+  - Tout est modifiable depuis l'éditeur de thème (textes, couleurs, offres, avantages, images)
+{%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+  assign p = section.settings.product
+  if p == blank and product
+    assign p = product
+  endif
+
+  assign image_blocks = section.blocks | where: 'type', 'image'
+  assign bundle_blocks = section.blocks | where: 'type', 'bundle'
+
+  assign default_bundle_index = 0
+  for b in bundle_blocks
+    if b.settings.selected
+      assign default_bundle_index = forloop.index0
+    endif
+  endfor
+-%}
+
+<style>
+  #spo-{{ sid }} {
+    --spo-accent: {{ section.settings.accent_color }};
+    --spo-accent-light: {{ section.settings.accent_light }};
+    --spo-text: {{ section.settings.text_color }};
+    --spo-muted: {{ section.settings.muted_color }};
+    --spo-bg: {{ section.settings.bg_color }};
+    --spo-border: {{ section.settings.border_color }};
+    --spo-urgency: {{ section.settings.urgency_color }};
+    --spo-btn-bg: {{ section.settings.button_bg }};
+    --spo-btn-text: {{ section.settings.button_text_color }};
+    --spo-radius: {{ section.settings.radius }}px;
+    --spo-sticky-top: {{ section.settings.sticky_offset }}px;
+    background: var(--spo-bg);
+    color: var(--spo-text);
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+  }
+  #spo-{{ sid }} * { box-sizing: border-box; }
+  #spo-{{ sid }} .spo-container {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  @media (min-width: 990px) {
+    #spo-{{ sid }} .spo-container { grid-template-columns: 1fr 1fr; gap: 64px; }
+    {%- if section.settings.enable_sticky_gallery %}
+    #spo-{{ sid }} .spo-media { position: sticky; top: var(--spo-sticky-top); }
+    {%- endif %}
+  }
+
+  /* ---------- Galerie ---------- */
+  #spo-{{ sid }} .spo-main {
+    position: relative;
+    border-radius: var(--spo-radius);
+    overflow: hidden;
+    background: var(--spo-accent-light);
+    aspect-ratio: 1 / 1;
+  }
+  #spo-{{ sid }} .spo-main img,
+  #spo-{{ sid }} .spo-main svg { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #spo-{{ sid }} .spo-slide { display: none; width: 100%; height: 100%; }
+  #spo-{{ sid }} .spo-slide.is-active { display: block; }
+  #spo-{{ sid }} .spo-zoom {
+    position: absolute; right: 16px; bottom: 16px;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: #fff; border: 0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  }
+  #spo-{{ sid }} .spo-thumbs {
+    display: flex; gap: 12px; margin-top: 16px;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  #spo-{{ sid }} .spo-thumbs::-webkit-scrollbar { display: none; }
+  #spo-{{ sid }} .spo-thumb {
+    flex: 0 0 96px; height: 96px; padding: 0; cursor: pointer;
+    border: 2px solid transparent; border-radius: 10px; overflow: hidden; background: none;
+  }
+  #spo-{{ sid }} .spo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #spo-{{ sid }} .spo-thumb.is-active { border-color: var(--spo-accent); }
+
+  /* ---------- Infos ---------- */
+  #spo-{{ sid }} .spo-rating { display: flex; align-items: center; gap: 10px; font-size: 16px; color: var(--spo-muted); }
+  #spo-{{ sid }} .spo-stars { color: var(--spo-accent); letter-spacing: 2px; font-size: 20px; }
+  #spo-{{ sid }} .spo-title { font-size: {{ section.settings.title_size }}px; line-height: 1.15; margin: 10px 0; font-weight: 700; color: var(--spo-text); }
+  #spo-{{ sid }} .spo-tagline { font-size: 14px; font-weight: 700; text-transform: uppercase; margin: 0 0 14px; }
+  #spo-{{ sid }} .spo-price-row { display: flex; align-items: center; gap: 12px; padding-bottom: 20px; border-bottom: 1px solid var(--spo-border); }
+  #spo-{{ sid }} .spo-compare { text-decoration: line-through; color: var(--spo-muted); font-size: 22px; }
+  #spo-{{ sid }} .spo-price { color: var(--spo-accent); font-size: 28px; font-weight: 700; }
+  #spo-{{ sid }} .spo-pill {
+    background: var(--spo-accent-light); color: var(--spo-text);
+    font-weight: 700; font-size: 14px; padding: 6px 16px; border-radius: 999px; text-transform: uppercase;
+  }
+  #spo-{{ sid }} .spo-intro { font-weight: 600; font-size: 16px; margin: 20px 0 16px; line-height: 1.5; }
+  #spo-{{ sid }} .spo-benefits { list-style: none; padding: 0; margin: 0 0 28px; }
+  #spo-{{ sid }} .spo-benefits li { display: flex; gap: 10px; align-items: center; font-size: 16px; margin-bottom: 10px; }
+
+  /* ---------- Offres (bundles) ---------- */
+  #spo-{{ sid }} .spo-bundles { display: flex; flex-direction: column; gap: 14px; }
+  #spo-{{ sid }} .spo-bundle {
+    display: block; cursor: pointer;
+    border: 2px solid var(--spo-border); border-radius: var(--spo-radius);
+    overflow: hidden; background: #fff; transition: border-color .2s, background .2s;
+  }
+  #spo-{{ sid }} .spo-bundle input { position: absolute; opacity: 0; pointer-events: none; }
+  #spo-{{ sid }} .spo-bundle-inner { display: flex; align-items: center; gap: 16px; padding: 16px 20px; }
+  #spo-{{ sid }} .spo-radio {
+    flex: 0 0 22px; height: 22px; border-radius: 50%;
+    border: 2px solid var(--spo-muted); position: relative;
+  }
+  #spo-{{ sid }} .spo-bundle.is-selected { border-color: var(--spo-accent); background: var(--spo-accent-light); }
+  #spo-{{ sid }} .spo-bundle.is-selected .spo-radio { border-color: var(--spo-accent); }
+  #spo-{{ sid }} .spo-bundle.is-selected .spo-radio::after {
+    content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--spo-accent);
+  }
+  #spo-{{ sid }} .spo-bundle-img { flex: 0 0 56px; height: 56px; object-fit: contain; }
+  #spo-{{ sid }} .spo-bundle-body { flex: 1; min-width: 0; }
+  #spo-{{ sid }} .spo-bundle-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  #spo-{{ sid }} .spo-bundle-title { font-size: 20px; font-weight: 700; }
+  #spo-{{ sid }} .spo-bundle-sub { font-size: 15px; color: var(--spo-muted); margin-top: 4px; }
+  #spo-{{ sid }} .spo-bundle-sub strong { color: var(--spo-accent); }
+  #spo-{{ sid }} .spo-bundle-prices { text-align: right; }
+  #spo-{{ sid }} .spo-bundle-price { color: var(--spo-accent); font-weight: 700; font-size: 18px; }
+  #spo-{{ sid }} .spo-bundle-compare { color: var(--spo-muted); text-decoration: line-through; font-size: 15px; }
+  #spo-{{ sid }} .spo-gift {
+    display: none; align-items: center; gap: 12px;
+    background: var(--spo-accent); color: #fff; padding: 10px 20px; font-size: 15px;
+  }
+  #spo-{{ sid }} .spo-bundle.is-selected .spo-gift { display: flex; }
+  #spo-{{ sid }} .spo-gift img { width: 28px; height: 28px; object-fit: cover; border-radius: 4px; }
+
+  /* ---------- Urgence + CTA ---------- */
+  #spo-{{ sid }} .spo-urgency { display: flex; align-items: center; gap: 10px; color: var(--spo-urgency); font-weight: 700; margin: 20px 0 14px; }
+  #spo-{{ sid }} .spo-dot {
+    width: 10px; height: 10px; border-radius: 50%; background: var(--spo-urgency);
+    animation: spo-pulse-{{ sid }} 1.5s infinite;
+  }
+  @keyframes spo-pulse-{{ sid }} {
+    0% { box-shadow: 0 0 0 0 rgba(0,0,0,.25); }
+    70% { box-shadow: 0 0 0 8px rgba(0,0,0,0); }
+    100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+  }
+  #spo-{{ sid }} .spo-cta {
+    width: 100%; border: 0; cursor: pointer;
+    background: var(--spo-btn-bg); color: var(--spo-btn-text);
+    font-size: 20px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    padding: 20px; border-radius: var(--spo-radius); transition: opacity .2s, transform .1s;
+  }
+  #spo-{{ sid }} .spo-cta:hover { opacity: .92; }
+  #spo-{{ sid }} .spo-cta:active { transform: scale(.99); }
+  #spo-{{ sid }} .spo-cta[disabled] { opacity: .6; cursor: wait; }
+  #spo-{{ sid }} .spo-payments { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 14px; }
+  #spo-{{ sid }} .spo-payments svg { width: 38px; height: 24px; }
+  #spo-{{ sid }} .spo-error { color: #c0392b; font-size: 14px; margin-top: 8px; display: none; }
+
+  /* ---------- Barre sticky ---------- */
+  #spo-{{ sid }} .spo-sticky-bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    background: #fff; border-top: 1px solid var(--spo-border);
+    box-shadow: 0 -4px 20px rgba(0,0,0,.08);
+    transform: translateY(110%); transition: transform .3s ease;
+  }
+  #spo-{{ sid }} .spo-sticky-bar.is-visible { transform: translateY(0); }
+  #spo-{{ sid }} .spo-sticky-inner {
+    max-width: {{ section.settings.max_width }}px; margin: 0 auto; padding: 12px 20px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  #spo-{{ sid }} .spo-sticky-img { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; }
+  #spo-{{ sid }} .spo-sticky-info { flex: 1; min-width: 0; }
+  #spo-{{ sid }} .spo-sticky-title { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #spo-{{ sid }} .spo-sticky-bar .spo-cta { width: auto; padding: 14px 32px; font-size: 16px; }
+  @media (max-width: 749px) {
+    #spo-{{ sid }} .spo-sticky-img, #spo-{{ sid }} .spo-sticky-info { display: none; }
+    #spo-{{ sid }} .spo-sticky-bar .spo-cta { width: 100%; }
+    #spo-{{ sid }} .spo-title { font-size: {{ section.settings.title_size | times: 0.75 | round }}px; }
+    #spo-{{ sid }} .spo-thumb { flex-basis: 72px; height: 72px; }
+  }
+
+  /* ---------- Lightbox ---------- */
+  #spo-{{ sid }} .spo-lightbox {
+    position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.85);
+    display: none; align-items: center; justify-content: center; padding: 20px;
+  }
+  #spo-{{ sid }} .spo-lightbox.is-open { display: flex; }
+  #spo-{{ sid }} .spo-lightbox img { max-width: 100%; max-height: 90vh; border-radius: 8px; }
+  #spo-{{ sid }} .spo-lightbox button {
+    position: absolute; top: 16px; right: 20px; background: none; border: 0; color: #fff; font-size: 36px; cursor: pointer;
+  }
+</style>
+
+<section id="spo-{{ sid }}" class="spo" data-section-id="{{ sid }}">
+  <div class="spo-container">
+
+    {%- comment -%} ========== GALERIE ========== {%- endcomment -%}
+    <div class="spo-media">
+      <div class="spo-main">
+        {%- if image_blocks.size > 0 -%}
+          {%- for block in image_blocks -%}
+            <div class="spo-slide{% if forloop.first %} is-active{% endif %}" data-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+              {%- if block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 1200 | image_tag: loading: 'eager', sizes: '(min-width: 990px) 50vw, 100vw', alt: block.settings.image.alt }}
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag }}
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- elsif p != blank and p.media.size > 0 -%}
+          {%- for media in p.media -%}
+            <div class="spo-slide{% if forloop.first %} is-active{% endif %}" data-index="{{ forloop.index0 }}">
+              {{ media.preview_image | image_url: width: 1200 | image_tag: loading: 'eager', sizes: '(min-width: 990px) 50vw, 100vw', alt: media.alt }}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <div class="spo-slide is-active">{{ 'product-1' | placeholder_svg_tag }}</div>
+        {%- endif -%}
+
+        {%- if section.settings.show_zoom -%}
+          <button type="button" class="spo-zoom" aria-label="Zoom">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+          </button>
+        {%- endif -%}
+      </div>
+
+      <div class="spo-thumbs">
+        {%- if image_blocks.size > 1 -%}
+          {%- for block in image_blocks -%}
+            <button type="button" class="spo-thumb{% if forloop.first %} is-active{% endif %}" data-index="{{ forloop.index0 }}">
+              {%- if block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 200 | image_tag: loading: 'lazy' }}
+              {%- endif -%}
+            </button>
+          {%- endfor -%}
+        {%- elsif image_blocks.size == 0 and p != blank and p.media.size > 1 -%}
+          {%- for media in p.media -%}
+            <button type="button" class="spo-thumb{% if forloop.first %} is-active{% endif %}" data-index="{{ forloop.index0 }}">
+              {{ media.preview_image | image_url: width: 200 | image_tag: loading: 'lazy' }}
+            </button>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- comment -%} ========== INFOS ========== {%- endcomment -%}
+    <div class="spo-info">
+      {%- if section.settings.show_rating -%}
+        <div class="spo-rating">
+          <span class="spo-stars">{{ section.settings.stars }}</span>
+          <span>{{ section.settings.rating_text }}</span>
+        </div>
+      {%- endif -%}
+
+      <h1 class="spo-title">
+        {%- if section.settings.title != blank -%}{{ section.settings.title }}{%- elsif p != blank -%}{{ p.title }}{%- endif -%}
+      </h1>
+
+      {%- if section.settings.tagline != blank -%}
+        <p class="spo-tagline">{{ section.settings.tagline }}</p>
+      {%- endif -%}
+
+      <div class="spo-price-row">
+        <span class="spo-compare" data-spo-compare>{{ section.settings.compare_price }}</span>
+        <span class="spo-price" data-spo-price>{{ section.settings.price }}</span>
+        {%- if section.settings.save_badge != blank -%}
+          <span class="spo-pill" data-spo-save>{{ section.settings.save_badge }}</span>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.intro != blank -%}
+        <div class="spo-intro">{{ section.settings.intro }}</div>
+      {%- endif -%}
+
+      <ul class="spo-benefits">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'benefit' -%}
+            <li {{ block.shopify_attributes }}>
+              <span>{{ block.settings.icon }}</span>
+              <span>{{ block.settings.text }}</span>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+
+      <form class="spo-form" data-spo-form>
+        <div class="spo-bundles" role="radiogroup">
+          {%- for block in bundle_blocks -%}
+            {%- liquid
+              assign is_sel = false
+              if forloop.index0 == default_bundle_index
+                assign is_sel = true
+              endif
+              assign bundle_variant_id = ''
+              if p != blank
+                assign bundle_variant_id = p.selected_or_first_available_variant.id
+                if block.settings.variant_id != blank
+                  assign bundle_variant_id = block.settings.variant_id
+                endif
+              endif
+            -%}
+            <label
+              class="spo-bundle{% if is_sel %} is-selected{% endif %}"
+              data-price="{{ block.settings.price }}"
+              data-compare="{{ block.settings.compare_price }}"
+              data-save="{{ block.settings.main_save_badge }}"
+              data-qty="{{ block.settings.quantity }}"
+              data-variant="{{ bundle_variant_id }}"
+              data-gift="{% if block.settings.show_gift and block.settings.gift_product != blank %}{{ block.settings.gift_product.selected_or_first_available_variant.id }}{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              <input type="radio" name="spo-bundle-{{ sid }}" value="{{ forloop.index0 }}" {% if is_sel %}checked{% endif %}>
+              <div class="spo-bundle-inner">
+                <span class="spo-radio"></span>
+                {%- if block.settings.image != blank -%}
+                  {{ block.settings.image | image_url: width: 120 | image_tag: class: 'spo-bundle-img', loading: 'lazy' }}
+                {%- endif -%}
+                <div class="spo-bundle-body">
+                  <div class="spo-bundle-head">
+                    <span class="spo-bundle-title">{{ block.settings.title }}</span>
+                    {%- if block.settings.badge != blank -%}
+                      <span class="spo-pill">{{ block.settings.badge }}</span>
+                    {%- endif -%}
+                  </div>
+                  {%- if block.settings.subtitle != blank -%}
+                    <div class="spo-bundle-sub">{{ block.settings.subtitle }}</div>
+                  {%- endif -%}
+                </div>
+                <div class="spo-bundle-prices">
+                  <div class="spo-bundle-price">{{ block.settings.price }}</div>
+                  {%- if block.settings.compare_price != blank -%}
+                    <div class="spo-bundle-compare">{{ block.settings.compare_price }}</div>
+                  {%- endif -%}
+                </div>
+              </div>
+              {%- if block.settings.show_gift and block.settings.gift_text != blank -%}
+                <div class="spo-gift">
+                  {%- if block.settings.gift_image != blank -%}
+                    {{ block.settings.gift_image | image_url: width: 80 | image_tag: loading: 'lazy' }}
+                  {%- endif -%}
+                  <span>{{ block.settings.gift_text }}</span>
+                </div>
+              {%- endif -%}
+            </label>
+          {%- endfor -%}
+        </div>
+
+        {%- if section.settings.urgency_text != blank -%}
+          <div class="spo-urgency">
+            <span class="spo-dot"></span>
+            <span>{{ section.settings.urgency_text }}</span>
+          </div>
+        {%- endif -%}
+
+        <button type="submit" class="spo-cta" data-spo-cta>{{ section.settings.button_label }}</button>
+        <p class="spo-error" data-spo-error></p>
+      </form>
+
+      {%- if section.settings.show_payment_icons -%}
+        <div class="spo-payments">
+          {%- for type in shop.enabled_payment_types -%}
+            {{ type | payment_type_svg_tag }}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- comment -%} ========== BARRE STICKY ========== {%- endcomment -%}
+  {%- if section.settings.enable_sticky_bar -%}
+    <div class="spo-sticky-bar" data-spo-sticky aria-hidden="true">
+      <div class="spo-sticky-inner">
+        {%- if p != blank and p.featured_image != blank -%}
+          {{ p.featured_image | image_url: width: 120 | image_tag: class: 'spo-sticky-img', loading: 'lazy' }}
+        {%- endif -%}
+        <div class="spo-sticky-info">
+          <div class="spo-sticky-title">
+            {%- if section.settings.title != blank -%}{{ section.settings.title }}{%- elsif p != blank -%}{{ p.title }}{%- endif -%}
+          </div>
+          <div>
+            <span class="spo-compare" style="font-size:15px" data-spo-compare>{{ section.settings.compare_price }}</span>
+            <span class="spo-price" style="font-size:18px" data-spo-price>{{ section.settings.price }}</span>
+          </div>
+        </div>
+        <button type="button" class="spo-cta" data-spo-sticky-cta>{{ section.settings.sticky_button_label }}</button>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_zoom -%}
+    <div class="spo-lightbox" data-spo-lightbox>
+      <button type="button" aria-label="Fermer">&times;</button>
+      <img src="" alt="">
+    </div>
+  {%- endif -%}
+</section>
+
+<script>
+  (function () {
+    var root = document.getElementById('spo-{{ sid }}');
+    if (!root) return;
+
+    // ----- Galerie -----
+    var slides = root.querySelectorAll('.spo-slide');
+    var thumbs = root.querySelectorAll('.spo-thumb');
+    var current = 0;
+    function show(i) {
+      current = i;
+      slides.forEach(function (s, n) { s.classList.toggle('is-active', n === i); });
+      thumbs.forEach(function (t, n) { t.classList.toggle('is-active', n === i); });
+    }
+    thumbs.forEach(function (t) {
+      t.addEventListener('click', function () { show(parseInt(t.dataset.index, 10)); });
+    });
+
+    // Swipe mobile
+    var main = root.querySelector('.spo-main');
+    var startX = null;
+    main.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+    main.addEventListener('touchend', function (e) {
+      if (startX === null || slides.length < 2) return;
+      var dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) show((current + (dx < 0 ? 1 : -1) + slides.length) % slides.length);
+      startX = null;
+    });
+
+    // Zoom / lightbox
+    var zoom = root.querySelector('.spo-zoom');
+    var lb = root.querySelector('[data-spo-lightbox]');
+    if (zoom && lb) {
+      zoom.addEventListener('click', function () {
+        var img = slides[current] && slides[current].querySelector('img');
+        if (!img) return;
+        lb.querySelector('img').src = img.currentSrc || img.src;
+        lb.classList.add('is-open');
+      });
+      lb.addEventListener('click', function () { lb.classList.remove('is-open'); });
+    }
+
+    // ----- Offres -----
+    var bundles = root.querySelectorAll('.spo-bundle');
+    function applyBundle(el) {
+      bundles.forEach(function (b) { b.classList.toggle('is-selected', b === el); });
+      root.querySelectorAll('[data-spo-price]').forEach(function (n) { if (el.dataset.price) n.textContent = el.dataset.price; });
+      root.querySelectorAll('[data-spo-compare]').forEach(function (n) { if (el.dataset.compare) n.textContent = el.dataset.compare; });
+      var save = root.querySelector('[data-spo-save]');
+      if (save && el.dataset.save) save.textContent = el.dataset.save;
+    }
+    bundles.forEach(function (b) {
+      b.querySelector('input').addEventListener('change', function () { applyBundle(b); });
+    });
+    var initial = root.querySelector('.spo-bundle.is-selected');
+    if (initial) applyBundle(initial);
+
+    // ----- Ajout au panier -----
+    var form = root.querySelector('[data-spo-form]');
+    var cta = root.querySelector('[data-spo-cta]');
+    var err = root.querySelector('[data-spo-error]');
+    var redirect = {{ section.settings.after_add | json }};
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var sel = root.querySelector('.spo-bundle.is-selected');
+      var variant = sel ? sel.dataset.variant : {{ p.selected_or_first_available_variant.id | default: '' | json }};
+      if (!variant) {
+        err.textContent = 'Sélectionnez un produit dans les réglages de la section.';
+        err.style.display = 'block';
+        return;
+      }
+      var items = [{ id: parseInt(variant, 10), quantity: parseInt((sel && sel.dataset.qty) || 1, 10) }];
+      if (sel && sel.dataset.gift) {
+        items.push({ id: parseInt(sel.dataset.gift, 10), quantity: 1, properties: { _gift: 'true' } });
+      }
+
+      cta.disabled = true;
+      err.style.display = 'none';
+      fetch(window.Shopify && Shopify.routes ? Shopify.routes.root + 'cart/add.js' : '/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ items: items })
+      })
+        .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw d; return d; }); })
+        .then(function () {
+          if (redirect === 'checkout') window.location.href = '/checkout';
+          else if (redirect === 'cart') window.location.href = '/cart';
+          else {
+            document.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
+            cta.disabled = false;
+          }
+        })
+        .catch(function (d) {
+          err.textContent = (d && (d.description || d.message)) || 'Erreur, veuillez réessayer.';
+          err.style.display = 'block';
+          cta.disabled = false;
+        });
+    });
+
+    // ----- Barre sticky -----
+    var bar = root.querySelector('[data-spo-sticky]');
+    if (bar && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        var e = entries[0];
+        // visible seulement quand le bouton principal est passé au-dessus de l'écran
+        var show = !e.isIntersecting && e.boundingClientRect.top < 0;
+        bar.classList.toggle('is-visible', show);
+        bar.setAttribute('aria-hidden', show ? 'false' : 'true');
+      });
+      io.observe(cta);
+      bar.querySelector('[data-spo-sticky-cta]').addEventListener('click', function () {
+        if (form.requestSubmit) form.requestSubmit(); else cta.click();
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Offre produit sticky",
+  "tag": "div",
+  "class": "section-sticky-product-offer",
+  "settings": [
+    { "type": "header", "content": "Produit" },
+    { "type": "product", "id": "product", "label": "Produit", "info": "Laisser vide sur la page produit pour utiliser le produit courant." },
+    {
+      "type": "select", "id": "after_add", "label": "Après l'ajout au panier", "default": "checkout",
+      "options": [
+        { "value": "checkout", "label": "Aller au paiement" },
+        { "value": "cart", "label": "Aller au panier" },
+        { "value": "stay", "label": "Rester sur la page" }
+      ]
+    },
+
+    { "type": "header", "content": "Avis" },
+    { "type": "checkbox", "id": "show_rating", "label": "Afficher la note", "default": true },
+    { "type": "text", "id": "stars", "label": "Étoiles", "default": "★★★★★" },
+    { "type": "text", "id": "rating_text", "label": "Texte des avis", "default": "Excellent 4.8 | 4968 reviews" },
+
+    { "type": "header", "content": "Titre & prix" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Bleame Crystal Hair Eraser", "info": "Laisser vide pour utiliser le titre du produit." },
+    { "type": "range", "id": "title_size", "label": "Taille du titre", "min": 24, "max": 64, "step": 2, "unit": "px", "default": 44 },
+    { "type": "text", "id": "tagline", "label": "Accroche", "default": "NEW: 🏆 2026 RATED HAIR REMOVAL INNOVATION" },
+    { "type": "text", "id": "compare_price", "label": "Prix barré", "default": "$99" },
+    { "type": "text", "id": "price", "label": "Prix", "default": "$53" },
+    { "type": "text", "id": "save_badge", "label": "Badge économie", "default": "SAVE 46%" },
+    { "type": "richtext", "id": "intro", "label": "Texte d'introduction", "default": "<p>Shave armpits, legs, face and bikini area - without painful waxing or razor cuts ever again!</p>" },
+
+    { "type": "header", "content": "Urgence & bouton" },
+    { "type": "text", "id": "urgency_text", "label": "Texte d'urgence", "default": "Body Scrub included for the next 101 orders!" },
+    { "type": "text", "id": "button_label", "label": "Texte du bouton", "default": "CLAIM OFFER" },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Afficher les moyens de paiement", "default": true },
+
+    { "type": "header", "content": "Galerie" },
+    { "type": "checkbox", "id": "show_zoom", "label": "Bouton zoom", "default": true },
+    { "type": "paragraph", "content": "Ajoutez des blocs « Image » pour personnaliser la galerie, sinon les médias du produit sont utilisés." },
+
+    { "type": "header", "content": "Effet sticky" },
+    { "type": "checkbox", "id": "enable_sticky_gallery", "label": "Galerie sticky (ordinateur)", "default": true },
+    { "type": "range", "id": "sticky_offset", "label": "Distance depuis le haut", "min": 0, "max": 200, "step": 5, "unit": "px", "default": 100, "info": "Augmentez si votre header est fixe." },
+    { "type": "checkbox", "id": "enable_sticky_bar", "label": "Barre d'achat sticky en bas", "default": true },
+    { "type": "text", "id": "sticky_button_label", "label": "Texte du bouton sticky", "default": "CLAIM OFFER" },
+
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "bg_color", "label": "Fond", "default": "#F7F6F2" },
+    { "type": "color", "id": "text_color", "label": "Texte", "default": "#1F2233" },
+    { "type": "color", "id": "muted_color", "label": "Texte secondaire", "default": "#6B6F80" },
+    { "type": "color", "id": "accent_color", "label": "Couleur principale", "default": "#6A5FC1" },
+    { "type": "color", "id": "accent_light", "label": "Couleur principale claire", "default": "#E3E0F7" },
+    { "type": "color", "id": "border_color", "label": "Bordures", "default": "#DDDCE3" },
+    { "type": "color", "id": "urgency_color", "label": "Couleur urgence", "default": "#E0662E" },
+    { "type": "color", "id": "button_bg", "label": "Fond du bouton", "default": "#5B52B5" },
+    { "type": "color", "id": "button_text_color", "label": "Texte du bouton", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Mise en page" },
+    { "type": "range", "id": "max_width", "label": "Largeur max", "min": 900, "max": 1600, "step": 20, "unit": "px", "default": 1300 },
+    { "type": "range", "id": "radius", "label": "Arrondi des coins", "min": 0, "max": 30, "step": 1, "unit": "px", "default": 14 },
+    { "type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image galerie",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" }
+      ]
+    },
+    {
+      "type": "benefit",
+      "name": "Avantage",
+      "settings": [
+        { "type": "text", "id": "icon", "label": "Emoji / icône", "default": "✨" },
+        { "type": "text", "id": "text", "label": "Texte", "default": "Pain-free, safe & gentle" }
+      ]
+    },
+    {
+      "type": "bundle",
+      "name": "Offre (pack)",
+      "settings": [
+        { "type": "checkbox", "id": "selected", "label": "Sélectionnée par défaut", "default": false },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Titre", "default": "1 Pack" },
+        { "type": "text", "id": "badge", "label": "Badge", "default": "SAVE $18" },
+        { "type": "richtext", "id": "subtitle", "label": "Sous-titre", "info": "Ex : Includes <strong>FREE</strong> shipping" },
+        { "type": "text", "id": "price", "label": "Prix affiché", "default": "$26" },
+        { "type": "text", "id": "compare_price", "label": "Prix barré", "default": "$44" },
+        { "type": "text", "id": "main_save_badge", "label": "Badge économie (en haut)", "default": "SAVE 41%", "info": "Remplace le badge du prix principal quand ce pack est choisi." },
+        { "type": "number", "id": "quantity", "label": "Quantité ajoutée au panier", "default": 1 },
+        { "type": "text", "id": "variant_id", "label": "ID de variante (optionnel)", "info": "Pour utiliser une variante précise (ex : une variante « 2 Pack » à prix réduit)." },
+        { "type": "header", "content": "Cadeau" },
+        { "type": "checkbox", "id": "show_gift", "label": "Afficher un cadeau", "default": false },
+        { "type": "image_picker", "id": "gift_image", "label": "Image du cadeau" },
+        { "type": "text", "id": "gift_text", "label": "Texte du cadeau", "default": "+ FREE Body scrub for silky & shiny skin" },
+        { "type": "product", "id": "gift_product", "label": "Produit cadeau (ajouté au panier)", "info": "Mettez-le à 0 € ou utilisez une réduction automatique." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Offre produit sticky",
+      "blocks": [
+        { "type": "benefit", "settings": { "icon": "👙", "text": "Perfect for the bikini area" } },
+        { "type": "benefit", "settings": { "icon": "🍑", "text": "Enjoy silky smooth skin" } },
+        { "type": "benefit", "settings": { "icon": "🌸", "text": "Eliminate ingrown hairs" } },
+        { "type": "benefit", "settings": { "icon": "🍓", "text": "No more strawberry legs" } },
+        { "type": "benefit", "settings": { "icon": "✨", "text": "Pain-free, safe & gentle" } },
+        { "type": "benefit", "settings": { "icon": "😌", "text": "Gently exfoliates dead skin cell" } },
+        { "type": "bundle", "settings": { "title": "1 Pack", "badge": "SAVE $18", "price": "$26", "compare_price": "$44", "main_save_badge": "SAVE 41%", "quantity": 1 } },
+        { "type": "bundle", "settings": { "title": "2 Pack", "badge": "SAVE $46", "subtitle": "<p>Includes <strong>FREE</strong> shipping</p>", "price": "$53", "compare_price": "$99", "main_save_badge": "SAVE 46%", "quantity": 2, "selected": true, "show_gift": true } }
+      ]
+    }
+  ]
+}
+{% endschema %}
