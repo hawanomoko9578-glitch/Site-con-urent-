@@ -1,0 +1,961 @@
+{%- comment -%}
+  Section : Avis vidéo défilants
+  - Vidéos ajoutées en blocs (fichier Shopify, lien .mp4, YouTube ou Vimeo)
+  - Défilement automatique en boucle ou carrousel à glisser
+  - Titre, sous-titre, étoiles et texte de note entièrement modifiables
+{%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+  assign s = section.settings
+  assign mode = s.scroll_mode
+-%}
+
+{%- capture header_html -%}
+  {%- if s.heading != blank or s.subheading != blank or s.show_rating -%}
+    <div class="vr__header vr__header--{{ s.text_align }}">
+      {%- if s.heading != blank -%}
+        <h2 class="vr__heading">{{ s.heading }}</h2>
+      {%- endif -%}
+      {%- if s.subheading != blank -%}
+        <p class="vr__subheading">{{ s.subheading }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture rating_html -%}
+  {%- if s.show_rating -%}
+    <div class="vr__rating vr__header--{{ s.text_align }}">
+      {%- if s.stars > 0 -%}
+        <span class="vr__stars" aria-hidden="true">
+          {%- for i in (1..s.stars) -%}
+            <svg viewBox="0 0 24 24" width="24" height="24" focusable="false"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>
+          {%- endfor -%}
+        </span>
+      {%- endif -%}
+      {%- if s.rating_text != blank -%}
+        <span class="vr__rating-text">{{ s.rating_text }}</span>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+{%- endcapture -%}
+
+<style>
+  #vr-{{ sid }} {
+    --vr-bg: {{ s.color_bg }};
+    --vr-text: {{ s.color_text }};
+    --vr-subtext: {{ s.color_subtext }};
+    --vr-star: {{ s.color_stars }};
+    --vr-card-bg: {{ s.color_card }};
+    --vr-radius: {{ s.card_radius }}px;
+    --vr-gap: {{ s.gap_mobile }}px;
+    --vr-cards: {{ s.cards_mobile }};
+    --vr-ratio: {{ s.aspect_ratio }};
+    --vr-h-size: {{ s.heading_size_mobile }}px;
+    --vr-sub-size: {{ s.subheading_size_mobile }}px;
+    --vr-rating-size: {{ s.rating_size_mobile }}px;
+    --vr-pad-x: 16px;
+    background: var(--vr-bg);
+    color: var(--vr-text);
+    padding-top: {{ s.padding_top_mobile }}px;
+    padding-bottom: {{ s.padding_bottom_mobile }}px;
+    overflow: hidden;
+  }
+  @media screen and (min-width: 750px) {
+    #vr-{{ sid }} {
+      --vr-gap: {{ s.gap_desktop }}px;
+      --vr-cards: {{ s.cards_tablet }};
+      --vr-h-size: {{ s.heading_size_desktop }}px;
+      --vr-sub-size: {{ s.subheading_size_desktop }}px;
+      --vr-rating-size: {{ s.rating_size_desktop }}px;
+      --vr-pad-x: 32px;
+      padding-top: {{ s.padding_top_desktop }}px;
+      padding-bottom: {{ s.padding_bottom_desktop }}px;
+    }
+  }
+  @media screen and (min-width: 1100px) {
+    #vr-{{ sid }} { --vr-cards: {{ s.cards_desktop }}; --vr-pad-x: 48px; }
+  }
+
+  #vr-{{ sid }} .vr__inner {
+    max-width: {% if s.full_width %}none{% else %}{{ s.max_width }}px{% endif %};
+    margin: 0 auto;
+  }
+  #vr-{{ sid }} .vr__header,
+  #vr-{{ sid }} .vr__rating { padding: 0 var(--vr-pad-x); }
+  #vr-{{ sid }} .vr__header--center { text-align: center; justify-content: center; }
+  #vr-{{ sid }} .vr__header--left { text-align: left; justify-content: flex-start; }
+  #vr-{{ sid }} .vr__heading {
+    margin: 0;
+    font-size: var(--vr-h-size);
+    line-height: 1.15;
+    font-weight: {{ s.heading_weight }};
+    color: var(--vr-text);
+    letter-spacing: -0.01em;
+  }
+  #vr-{{ sid }} .vr__subheading {
+    margin: 0.6em 0 0;
+    font-size: var(--vr-sub-size);
+    line-height: 1.4;
+    color: var(--vr-subtext);
+  }
+  #vr-{{ sid }} .vr__header + .vr__viewport,
+  #vr-{{ sid }} .vr__viewport + .vr__header { margin-top: {{ s.spacing_text }}px; }
+  #vr-{{ sid }} .vr__rating {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    margin-top: {{ s.spacing_rating }}px;
+    font-size: var(--vr-rating-size);
+    color: var(--vr-text);
+  }
+  #vr-{{ sid }} .vr__stars { display: inline-flex; gap: 2px; color: var(--vr-star); }
+  #vr-{{ sid }} .vr__stars svg {
+    width: calc(var(--vr-rating-size) * 1.15);
+    height: calc(var(--vr-rating-size) * 1.15);
+    fill: currentColor;
+  }
+  #vr-{{ sid }} .vr__header p,
+  #vr-{{ sid }} .vr__rating-text { overflow-wrap: anywhere; }
+
+  /* Zone des vidéos */
+  #vr-{{ sid }} .vr__viewport {
+    display: block;
+    position: relative;
+    container-type: inline-size;
+  }
+  #vr-{{ sid }} .vr__track {
+    display: flex;
+    gap: var(--vr-gap);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  #vr-{{ sid }} .vr__card {
+    flex: 0 0 auto;
+    width: calc((100cqw - 2 * var(--vr-pad-x) - (var(--vr-cards) - 1) * var(--vr-gap)) / var(--vr-cards));
+    aspect-ratio: var(--vr-ratio);
+    position: relative;
+    border-radius: var(--vr-radius);
+    overflow: hidden;
+    background: var(--vr-card-bg);
+    {%- if s.card_shadow %} box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);{% endif %}
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    transform: translateZ(0);
+  }
+  #vr-{{ sid }} .vr__media,
+  #vr-{{ sid }} .vr__media video,
+  #vr-{{ sid }} .vr__media iframe,
+  #vr-{{ sid }} .vr__media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+  #vr-{{ sid }} .vr__media video,
+  #vr-{{ sid }} .vr__media img { object-fit: {{ s.video_fit }}; }
+  #vr-{{ sid }} .vr__media iframe { pointer-events: none; }
+  #vr-{{ sid }} .vr__placeholder {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    padding: 12px; text-align: center; font-size: 13px; color: var(--vr-subtext);
+    background: rgba(0, 0, 0, 0.05);
+  }
+  #vr-{{ sid }} .vr__placeholder svg { width: 100%; height: 100%; opacity: 0.4; }
+  #vr-{{ sid }} .vr__caption {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 28px 12px 12px;
+    font-size: 13px; line-height: 1.3; color: #fff;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+  }
+  #vr-{{ sid }} .vr__sound {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    width: 34px; height: 34px; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    border: 0; border-radius: 50%; cursor: pointer;
+    background: rgba(0, 0, 0, 0.45); color: #fff;
+  }
+  #vr-{{ sid }} .vr__sound svg { width: 18px; height: 18px; fill: currentColor; }
+  #vr-{{ sid }} .vr__sound .vr__icon-on { display: none; }
+  #vr-{{ sid }} .vr__sound[aria-pressed="true"] .vr__icon-on { display: block; }
+  #vr-{{ sid }} .vr__sound[aria-pressed="true"] .vr__icon-off { display: none; }
+
+  /* Mode défilement automatique */
+  #vr-{{ sid }} [data-mode="marquee"] .vr__track {
+    width: max-content;
+    padding: 0 var(--vr-pad-x);
+    animation: vr-scroll-{{ sid }} var(--vr-duration, 40s) linear infinite;
+    animation-play-state: paused;
+    will-change: transform;
+  }
+  #vr-{{ sid }} [data-mode="marquee"].is-ready .vr__track { animation-play-state: running; }
+  #vr-{{ sid }} [data-mode="marquee"].is-paused .vr__track { animation-play-state: paused; }
+  {%- if s.reverse %}
+  #vr-{{ sid }} [data-mode="marquee"] .vr__track { animation-direction: reverse; }
+  {%- endif %}
+  @keyframes vr-scroll-{{ sid }} {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(calc(-1 * var(--vr-distance, 0px)), 0, 0); }
+  }
+
+  /* Mode carrousel à glisser */
+  #vr-{{ sid }} [data-mode="swipe"] .vr__track {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 var(--vr-pad-x);
+    padding: 0 var(--vr-pad-x);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  #vr-{{ sid }} [data-mode="swipe"] .vr__track::-webkit-scrollbar { display: none; }
+  #vr-{{ sid }} [data-mode="swipe"] .vr__card { scroll-snap-align: start; }
+  #vr-{{ sid }} .vr__arrow {
+    display: none;
+    position: absolute; top: 50%; z-index: 3;
+    width: 44px; height: 44px; margin-top: -22px; padding: 0;
+    align-items: center; justify-content: center;
+    border: 0; border-radius: 50%; cursor: pointer;
+    background: #fff; color: #111; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+  }
+  #vr-{{ sid }} .vr__arrow svg { width: 18px; height: 18px; }
+  #vr-{{ sid }} .vr__arrow--prev { left: 8px; }
+  #vr-{{ sid }} .vr__arrow--next { right: 8px; }
+  #vr-{{ sid }} .vr__arrow[disabled] { opacity: 0; pointer-events: none; }
+  @media (hover: hover) and (min-width: 750px) {
+    #vr-{{ sid }} [data-mode="swipe"] .vr__arrow { display: flex; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #vr-{{ sid }} [data-mode="marquee"] .vr__track { animation: none; }
+  }
+</style>
+
+<section id="vr-{{ sid }}" class="vr" aria-label="{{ s.heading | strip_html | escape }}">
+  <div class="vr__inner">
+    {%- if s.text_position == 'top' -%}
+      {{ header_html }}
+    {%- endif -%}
+
+    <video-reviews class="vr__viewport" data-mode="{{ mode }}" data-speed="{{ s.speed }}" data-pause-hover="{{ s.pause_on_hover }}">
+      {%- if mode == 'swipe' -%}
+        <button type="button" class="vr__arrow vr__arrow--prev" aria-label="Précédent" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button type="button" class="vr__arrow vr__arrow--next" aria-label="Suivant">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      {%- endif -%}
+
+      <ul class="vr__track" role="list">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign b = block.settings
+            assign url = b.video_url | strip
+            assign kind = 'none'
+            assign yt_id = ''
+            assign vimeo_id = ''
+            if b.video != blank
+              assign kind = 'shopify'
+            elsif url != blank
+              if url contains 'youtu'
+                assign kind = 'youtube'
+                if url contains 'shorts/'
+                  assign yt_id = url | split: 'shorts/' | last
+                elsif url contains 'youtu.be/'
+                  assign yt_id = url | split: 'youtu.be/' | last
+                elsif url contains 'embed/'
+                  assign yt_id = url | split: 'embed/' | last
+                elsif url contains 'v='
+                  assign yt_id = url | split: 'v=' | last
+                endif
+                assign yt_id = yt_id | split: '?' | first | split: '&' | first | split: '/' | first
+              elsif url contains 'vimeo.com'
+                assign kind = 'vimeo'
+                assign vimeo_id = url | split: '?' | first | split: '/' | last
+              else
+                assign kind = 'file'
+              endif
+            endif
+
+            assign poster = ''
+            if b.poster != blank
+              assign poster = b.poster | image_url: width: 720
+            elsif kind == 'shopify' and b.video.preview_image != blank
+              assign poster = b.video.preview_image | image_url: width: 720
+            endif
+          -%}
+          <li class="vr__card" {{ block.shopify_attributes }}>
+            <div class="vr__media">
+              {%- case kind -%}
+                {%- when 'shopify' or 'file' -%}
+                  <video
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    {% if poster != blank %}poster="{{ poster }}"{% endif %}
+                  >
+                    {%- if kind == 'shopify' -%}
+                      {%- for source in b.video.sources -%}
+                        {%- if source.mime_type contains 'mp4' or source.mime_type contains 'webm' -%}
+                          <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                        {%- endif -%}
+                      {%- endfor -%}
+                    {%- else -%}
+                      <source src="{{ url | escape }}">
+                    {%- endif -%}
+                  </video>
+                {%- when 'youtube' -%}
+                  <iframe
+                    data-src="https://www.youtube-nocookie.com/embed/{{ yt_id }}?autoplay=1&mute=1&loop=1&playlist={{ yt_id }}&controls=0&playsinline=1&modestbranding=1&rel=0"
+                    title="{{ b.caption | default: 'Avis vidéo' | strip_html | escape }}"
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    loading="lazy"
+                  ></iframe>
+                {%- when 'vimeo' -%}
+                  <iframe
+                    data-src="https://player.vimeo.com/video/{{ vimeo_id }}?background=1&autoplay=1&loop=1&muted=1"
+                    title="{{ b.caption | default: 'Avis vidéo' | strip_html | escape }}"
+                    allow="autoplay; picture-in-picture"
+                    loading="lazy"
+                  ></iframe>
+                {%- else -%}
+                  {%- if b.poster != blank -%}
+                    {{ b.poster | image_url: width: 720 | image_tag: loading: 'lazy', alt: b.caption | strip_html }}
+                  {%- else -%}
+                    <div class="vr__placeholder">
+                      {{ 'lifestyle-1' | placeholder_svg_tag }}
+                    </div>
+                  {%- endif -%}
+              {%- endcase -%}
+            </div>
+
+            {%- liquid
+              assign has_sound = false
+              if s.show_sound
+                if kind == 'shopify' or kind == 'file'
+                  assign has_sound = true
+                endif
+              endif
+            -%}
+            {%- if has_sound -%}
+              <button type="button" class="vr__sound" aria-pressed="false" aria-label="Activer le son">
+                <svg class="vr__icon-off" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.6 3l2.7-2.7-1.4-1.4-2.7 2.7-2.7-2.7-1.4 1.4 2.7 2.7-2.7 2.7 1.4 1.4 2.7-2.7 2.7 2.7 1.4-1.4L16.6 12z"/></svg>
+                <svg class="vr__icon-on" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 8v8a4.5 4.5 0 002.5-4zM14 3.2v2.1a7 7 0 010 13.4v2.1a9 9 0 000-17.6z"/></svg>
+              </button>
+            {%- endif -%}
+
+            {%- if b.caption != blank -%}
+              <div class="vr__caption">{{ b.caption }}</div>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </video-reviews>
+
+    {%- if s.text_position == 'bottom' -%}
+      {{ header_html }}
+    {%- endif -%}
+    {{ rating_html }}
+  </div>
+</section>
+
+<script>
+  (function () {
+    if (customElements.get('video-reviews')) return;
+
+    class VideoReviews extends HTMLElement {
+      connectedCallback() {
+        this.track = this.querySelector('.vr__track');
+        if (!this.track) return;
+        this.mode = this.dataset.mode;
+        if (this.mode === 'marquee' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          this.mode = 'swipe';
+          this.dataset.mode = 'swipe';
+        }
+
+        if (this.mode === 'marquee') this.setupMarquee();
+        else this.setupSwipe();
+
+        this.setupMedia();
+        this.addEventListener('click', this.onSoundClick.bind(this));
+      }
+
+      disconnectedCallback() {
+        if (this.io) this.io.disconnect();
+        if (this.ro) this.ro.disconnect();
+      }
+
+      /* Défilement automatique en boucle */
+      setupMarquee() {
+        this.originals = Array.from(this.track.children);
+        if (!this.originals.length) return;
+
+        const build = () => {
+          this.track.querySelectorAll('[data-vr-clone]').forEach((el) => {
+            if (this.io) el.querySelectorAll('video, iframe').forEach((m) => this.io.unobserve(m));
+            el.remove();
+          });
+          const viewport = this.offsetWidth;
+          if (!viewport) return;
+          const first = this.originals[0];
+          // Ajoute des copies jusqu'à remplir 2 fois la largeur visible, pour une boucle sans trou
+          let guard = 0;
+          let setWidth = 0;
+          do {
+            this.originals.forEach((item) => {
+              const clone = item.cloneNode(true);
+              clone.setAttribute('data-vr-clone', '');
+              clone.setAttribute('aria-hidden', 'true');
+              clone.removeAttribute('data-shopify-editor-block');
+              clone.querySelectorAll('button').forEach((btn) => btn.setAttribute('tabindex', '-1'));
+              this.track.appendChild(clone);
+            });
+            if (!setWidth) setWidth = this.track.children[this.originals.length].offsetLeft - first.offsetLeft;
+            guard++;
+          } while (this.track.scrollWidth < viewport + setWidth * 2 && guard < 20);
+
+          const speed = Math.max(parseFloat(this.dataset.speed) || 40, 5);
+          this.style.setProperty('--vr-distance', setWidth + 'px');
+          this.style.setProperty('--vr-duration', setWidth / speed + 's');
+          this.classList.add('is-ready');
+          if (this.io) this.track.querySelectorAll('[data-vr-clone] video, [data-vr-clone] iframe').forEach((el) => this.io.observe(el));
+        };
+
+        let lastWidth = 0;
+        this.ro = new ResizeObserver(() => {
+          if (Math.abs(this.offsetWidth - lastWidth) < 2) return;
+          lastWidth = this.offsetWidth;
+          build();
+        });
+        this.ro.observe(this);
+
+        const pause = () => this.classList.add('is-paused');
+        const play = () => this.classList.remove('is-paused');
+        if (this.dataset.pauseHover === 'true') {
+          this.addEventListener('mouseenter', pause);
+          this.addEventListener('mouseleave', play);
+        }
+        this.addEventListener('touchstart', pause, { passive: true });
+        this.addEventListener('touchend', play);
+        this.addEventListener('touchcancel', play);
+        this.addEventListener('focusin', pause);
+        this.addEventListener('focusout', play);
+
+        // Éditeur de thème : pause quand un bloc vidéo est sélectionné
+        if (window.Shopify && Shopify.designMode) {
+          document.addEventListener('shopify:block:select', (e) => { if (this.contains(e.target)) pause(); });
+          document.addEventListener('shopify:block:deselect', (e) => { if (this.contains(e.target)) play(); });
+        }
+      }
+
+      /* Carrousel à glisser avec flèches */
+      setupSwipe() {
+        const prev = this.querySelector('.vr__arrow--prev');
+        const next = this.querySelector('.vr__arrow--next');
+        const step = () => {
+          const card = this.track.querySelector('.vr__card');
+          const gap = parseFloat(getComputedStyle(this.track).columnGap) || 0;
+          return card ? card.offsetWidth + gap : this.track.clientWidth;
+        };
+        const update = () => {
+          const max = this.track.scrollWidth - this.track.clientWidth - 2;
+          if (prev) prev.disabled = this.track.scrollLeft <= 2;
+          if (next) next.disabled = this.track.scrollLeft >= max;
+        };
+        if (prev) prev.addEventListener('click', () => this.track.scrollBy({ left: -step(), behavior: 'smooth' }));
+        if (next) next.addEventListener('click', () => this.track.scrollBy({ left: step(), behavior: 'smooth' }));
+        this.track.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+      }
+
+      /* Lecture uniquement des vidéos visibles (économise la batterie et la data) */
+      setupMedia() {
+        this.io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              const el = entry.target;
+              if (el.tagName === 'IFRAME') {
+                if (entry.isIntersecting && !el.src) el.src = el.dataset.src;
+                return;
+              }
+              if (entry.isIntersecting) {
+                if (el.preload === 'none') el.preload = 'auto';
+                const p = el.play();
+                if (p && p.catch) p.catch(() => {});
+              } else {
+                el.pause();
+              }
+            });
+          },
+          { rootMargin: '0px 200px', threshold: 0.1 }
+        );
+        this.querySelectorAll('video, iframe').forEach((el) => this.io.observe(el));
+      }
+
+      onSoundClick(event) {
+        const btn = event.target.closest('.vr__sound');
+        if (!btn) return;
+        const video = btn.closest('.vr__card').querySelector('video');
+        if (!video) return;
+        const turnOn = video.muted;
+        this.querySelectorAll('video').forEach((v) => { v.muted = true; });
+        this.querySelectorAll('.vr__sound').forEach((b) => {
+          b.setAttribute('aria-pressed', 'false');
+          b.setAttribute('aria-label', 'Activer le son');
+        });
+        if (turnOn) {
+          video.muted = false;
+          video.play().catch(() => {});
+          btn.setAttribute('aria-pressed', 'true');
+          btn.setAttribute('aria-label', 'Couper le son');
+        }
+      }
+    }
+
+    customElements.define('video-reviews', VideoReviews);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Avis vidéo défilants",
+  "tag": "div",
+  "class": "section-video-reviews",
+  "max_blocks": 20,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Textes"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Look At How Others Are Loving Their Bleame"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subheading",
+      "label": "Sous-titre",
+      "default": "Real Reviews From Real People"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Position du titre",
+      "options": [
+        { "value": "bottom", "label": "Sous les vidéos" },
+        { "value": "top", "label": "Au-dessus des vidéos" }
+      ],
+      "default": "bottom"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Alignement du texte",
+      "options": [
+        { "value": "center", "label": "Centré" },
+        { "value": "left", "label": "À gauche" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Note / étoiles"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Afficher la note",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "stars",
+      "label": "Nombre d'étoiles",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "inline_richtext",
+      "id": "rating_text",
+      "label": "Texte de la note",
+      "default": "Rated 4.8/5 by 1,319+ Happy Customers"
+    },
+    {
+      "type": "header",
+      "content": "Défilement"
+    },
+    {
+      "type": "select",
+      "id": "scroll_mode",
+      "label": "Type de défilement",
+      "options": [
+        { "value": "marquee", "label": "Automatique en boucle" },
+        { "value": "swipe", "label": "Manuel (glisser / flèches)" }
+      ],
+      "default": "marquee"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Vitesse du défilement automatique",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 40,
+      "info": "Pixels par seconde"
+    },
+    {
+      "type": "checkbox",
+      "id": "reverse",
+      "label": "Défiler vers la droite",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Mettre en pause au survol (ordinateur)",
+      "default": true,
+      "info": "Sur téléphone, le défilement se met en pause quand on appuie sur une vidéo."
+    },
+    {
+      "type": "header",
+      "content": "Vidéos"
+    },
+    {
+      "type": "range",
+      "id": "cards_mobile",
+      "label": "Vidéos visibles sur téléphone",
+      "min": 1,
+      "max": 3,
+      "step": 0.1,
+      "default": 2,
+      "info": "Ex. 1,8 pour laisser deviner la vidéo suivante"
+    },
+    {
+      "type": "range",
+      "id": "cards_tablet",
+      "label": "Vidéos visibles sur tablette",
+      "min": 1.5,
+      "max": 5,
+      "step": 0.5,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "cards_desktop",
+      "label": "Vidéos visibles sur ordinateur",
+      "min": 2,
+      "max": 7,
+      "step": 0.5,
+      "default": 4.5
+    },
+    {
+      "type": "select",
+      "id": "aspect_ratio",
+      "label": "Format des vidéos",
+      "options": [
+        { "value": "9 / 16", "label": "Vertical 9:16 (story / TikTok)" },
+        { "value": "4 / 5", "label": "Portrait 4:5" },
+        { "value": "1 / 1", "label": "Carré 1:1" },
+        { "value": "16 / 9", "label": "Paysage 16:9" }
+      ],
+      "default": "9 / 16"
+    },
+    {
+      "type": "select",
+      "id": "video_fit",
+      "label": "Remplissage",
+      "options": [
+        { "value": "cover", "label": "Remplir la carte (recadrer)" },
+        { "value": "contain", "label": "Vidéo entière (bandes)" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sound",
+      "label": "Afficher le bouton son",
+      "default": true,
+      "info": "Les vidéos démarrent toujours sans son (obligatoire pour la lecture automatique)."
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Arrondi des coins",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "checkbox",
+      "id": "card_shadow",
+      "label": "Ombre sous les vidéos",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Couleurs"
+    },
+    {
+      "type": "color",
+      "id": "color_bg",
+      "label": "Fond de la section",
+      "default": "#F9F9FA"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Titre et texte",
+      "default": "#232330"
+    },
+    {
+      "type": "color",
+      "id": "color_subtext",
+      "label": "Sous-titre",
+      "default": "#2E2E3A"
+    },
+    {
+      "type": "color",
+      "id": "color_stars",
+      "label": "Étoiles",
+      "default": "#7369B8"
+    },
+    {
+      "type": "color",
+      "id": "color_card",
+      "label": "Fond des cartes vidéo",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Tailles du texte"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Titre – téléphone",
+      "min": 16,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "label": "Titre – tablette et ordinateur",
+      "min": 20,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "default": 42
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Épaisseur du titre",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "600", "label": "Semi-gras" },
+        { "value": "700", "label": "Gras" },
+        { "value": "800", "label": "Très gras" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_mobile",
+      "label": "Sous-titre – téléphone",
+      "min": 12,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_desktop",
+      "label": "Sous-titre – tablette et ordinateur",
+      "min": 12,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "rating_size_mobile",
+      "label": "Note – téléphone",
+      "min": 11,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "rating_size_desktop",
+      "label": "Note – tablette et ordinateur",
+      "min": 11,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Pleine largeur",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Largeur maximale (si pas pleine largeur)",
+      "min": 800,
+      "max": 1800,
+      "step": 50,
+      "unit": "px",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Espace entre vidéos – téléphone",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "gap_desktop",
+      "label": "Espace entre vidéos – tablette et ordinateur",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "spacing_text",
+      "label": "Espace entre vidéos et titre",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "spacing_rating",
+      "label": "Espace au-dessus de la note",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Marge haute – téléphone",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Marge basse – téléphone",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Marge haute – ordinateur",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Marge basse – ordinateur",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Vidéo",
+      "settings": [
+        {
+          "type": "text",
+          "id": "video_url",
+          "label": "Lien de la vidéo",
+          "info": "Collez le lien copié depuis Contenu > Fichiers (https://cdn.shopify.com/...mp4). Fonctionne aussi avec un lien YouTube (Shorts) ou Vimeo."
+        },
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Ou choisir une vidéo de la boutique",
+          "info": "Si une vidéo est choisie ici, elle remplace le lien."
+        },
+        {
+          "type": "image_picker",
+          "id": "poster",
+          "label": "Image de couverture (optionnel)",
+          "info": "Affichée pendant le chargement de la vidéo."
+        },
+        {
+          "type": "inline_richtext",
+          "id": "caption",
+          "label": "Texte sur la vidéo (optionnel)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Avis vidéo défilants",
+      "blocks": [
+        { "type": "video" },
+        { "type": "video" },
+        { "type": "video" },
+        { "type": "video" }
+      ]
+    }
+  ]
+}
+{% endschema %}
